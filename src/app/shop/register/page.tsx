@@ -32,6 +32,7 @@ export default function ShopRegisterPage() {
   const [marketingNeeds, setMarketingNeeds] = useState("");
   const [budgetRange, setBudgetRange] = useState<BudgetRange>("10~30만원");
   const [goals, setGoals] = useState("");
+  const [contactMethod, setContactMethod] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -43,7 +44,7 @@ export default function ShopRegisterPage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_type")
+        .select("user_type, contact_method")
         .eq("user_id", user.id)
         .single();
 
@@ -53,6 +54,7 @@ export default function ShopRegisterPage() {
       }
 
       setUserId(user.id);
+      setContactMethod((profile as { user_type: string; contact_method?: string }).contact_method || "");
 
       const { data: shop } = await supabase
         .from("shops")
@@ -134,6 +136,13 @@ export default function ShopRegisterPage() {
     } else {
       const { error } = await supabase.from("shops").insert(payload);
       dbError = error;
+    }
+
+    if (!dbError) {
+      await supabase
+        .from("profiles")
+        .update({ contact_method: contactMethod || null })
+        .eq("user_id", userId);
     }
 
     setLoading(false);
@@ -261,6 +270,22 @@ export default function ShopRegisterPage() {
               />
             </div>
           ))}
+        </div>
+
+        {/* 연락처 */}
+        <div className="card space-y-4">
+          <h2 className="font-bold text-gray-900 text-lg">연락처</h2>
+          <p className="text-sm text-gray-500 -mt-2">매칭 수락 시 상대방에게만 공개됩니다</p>
+          <div>
+            <label className="label">선호 연락 방식</label>
+            <input
+              type="text"
+              value={contactMethod}
+              onChange={(e) => setContactMethod(e.target.value)}
+              placeholder="카카오톡 ID 또는 전화번호"
+              className="input-field"
+            />
+          </div>
         </div>
 
         {/* 마케팅 정보 */}

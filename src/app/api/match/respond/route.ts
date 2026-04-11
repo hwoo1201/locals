@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
 
       const [{ data: shop }, { data: targetProfile }] = await Promise.all([
         supabase.from("shops").select("name").eq("id", matchRequest.shop_id).single(),
-        supabase.from("profiles").select("name").eq("user_id", user.id).single(),
+        supabase.from("profiles").select("name, contact_method").eq("user_id", user.id).single(),
       ]);
 
       if (requesterAuth?.email && shop && targetProfile) {
@@ -90,9 +90,10 @@ export async function POST(req: NextRequest) {
           await sendMatchAcceptedEmail({
             toEmail: requesterAuth.email,
             toName: requesterAuth.user_metadata?.name || "사용자",
-            fromName: (targetProfile as { name: string }).name,
+            fromName: (targetProfile as { name: string; contact_method?: string }).name,
             shopName: (shop as { name: string }).name,
             projectId,
+            fromContactMethod: (targetProfile as { name: string; contact_method?: string }).contact_method,
           });
         } else if (action === "reject") {
           await sendMatchRejectedEmail({

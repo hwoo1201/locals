@@ -59,12 +59,14 @@ export async function sendMatchAcceptedEmail({
   fromName,
   shopName,
   projectId,
+  fromContactMethod,
 }: {
   toEmail: string;
   toName: string;
   fromName: string;
   shopName: string;
   projectId: string;
+  fromContactMethod?: string;
 }) {
   await getResend().emails.send({
     from: `LOCALS <${FROM}>`,
@@ -81,6 +83,13 @@ export async function sendMatchAcceptedEmail({
           <strong>${fromName}</strong>님이 매칭 요청을 <strong style="color: #16a34a;">수락</strong>했습니다.<br/>
           <strong>${shopName}</strong> 프로젝트가 시작되었습니다!
         </p>
+
+        ${fromContactMethod ? `
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 20px 0;">
+          <p style="color: #15803d; font-weight: bold; margin: 0 0 4px 0; font-size: 13px;">상대방 연락처</p>
+          <p style="color: #166534; font-size: 15px; font-weight: bold; margin: 0;">${fromContactMethod}</p>
+        </div>
+        ` : ""}
 
         <a href="${SITE_URL}/project/${projectId}"
            style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">

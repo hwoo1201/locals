@@ -58,6 +58,7 @@ export default function StudentProfileRegisterPage() {
   const [portfolioUrl, setPortfolioUrl] = useState("");
   const [preferredCategories, setPreferredCategories] = useState<ShopCategory[]>([]);
   const [availableRegions, setAvailableRegions] = useState<string[]>([]);
+  const [contactMethod, setContactMethod] = useState("");
 
   useEffect(() => {
     const load = async () => {
@@ -69,7 +70,7 @@ export default function StudentProfileRegisterPage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_type")
+        .select("user_type, contact_method")
         .eq("user_id", user.id)
         .single();
 
@@ -79,6 +80,7 @@ export default function StudentProfileRegisterPage() {
       }
 
       setUserId(user.id);
+      setContactMethod((profile as { user_type: string; contact_method?: string }).contact_method || "");
 
       const { data: sp } = await supabase
         .from("student_profiles")
@@ -153,6 +155,13 @@ export default function StudentProfileRegisterPage() {
     } else {
       const { error } = await supabase.from("student_profiles").insert(payload);
       dbError = error;
+    }
+
+    if (!dbError) {
+      await supabase
+        .from("profiles")
+        .update({ contact_method: contactMethod || null })
+        .eq("user_id", userId);
     }
 
     setLoading(false);
@@ -261,6 +270,22 @@ export default function StudentProfileRegisterPage() {
                 {cat}
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* 연락처 */}
+        <div className="card space-y-4">
+          <h2 className="font-bold text-gray-900 text-lg">연락처</h2>
+          <p className="text-sm text-gray-500 -mt-2">매칭 수락 시 상대방에게만 공개됩니다</p>
+          <div>
+            <label className="label">선호 연락 방식</label>
+            <input
+              type="text"
+              value={contactMethod}
+              onChange={(e) => setContactMethod(e.target.value)}
+              placeholder="카카오톡 ID 또는 전화번호"
+              className="input-field"
+            />
           </div>
         </div>
 

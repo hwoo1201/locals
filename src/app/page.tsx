@@ -61,9 +61,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="grid grid-cols-3 gap-6 text-center">
             {[
-              { num: "무료", label: "회원가입" },
-              { num: "빠른", label: "매칭 프로세스" },
-              { num: "실시간", label: "효과 분석" },
+              { num: "간편한", label: "시작" },
+              { num: "검증된", label: "대학생 매칭" },
+              { num: "마케팅", label: "전후 비교 분석" },
             ].map((item) => (
               <div key={item.label}>
                 <p className="text-3xl md:text-4xl font-black text-blue-600 mb-1">{item.num}</p>
@@ -117,12 +117,6 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/auth/signup?type=owner"
-                className="block mt-6 bg-orange-500 hover:bg-orange-600 text-white text-center font-bold px-6 py-3 rounded-xl transition-colors"
-              >
-                소상공인으로 가입하기 →
-              </Link>
             </div>
             {/* 대학생 */}
             <div className="bg-orange-500 text-white rounded-2xl p-8">
@@ -140,12 +134,6 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/auth/signup?type=student"
-                className="block mt-6 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold px-6 py-3 rounded-xl transition-colors"
-              >
-                대학생으로 가입하기 →
-              </Link>
             </div>
           </div>
         </div>

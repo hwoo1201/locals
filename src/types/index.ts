@@ -9,6 +9,7 @@ export interface Profile {
   region?: string;
   bio?: string;
   avatar_url?: string;
+  contact_method?: string;
   created_at: string;
   updated_at: string;
 }
