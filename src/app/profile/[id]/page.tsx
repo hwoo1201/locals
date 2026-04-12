@@ -399,6 +399,28 @@ function StudentProfileView({
             </div>
           )}
 
+          {/* 작업물 이미지 */}
+          {studentProfile.portfolio_images?.length > 0 && (
+            <div>
+              <p className="label">작업물</p>
+              <div className="space-y-3">
+                {studentProfile.portfolio_images.map((img, idx) => (
+                  <div key={idx} className="rounded-xl overflow-hidden bg-gray-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img.url}
+                      alt={img.caption || `작업물 ${idx + 1}`}
+                      className="w-full object-cover max-h-64"
+                    />
+                    {img.caption && (
+                      <p className="text-sm text-gray-600 px-3 py-2">{img.caption}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 선호 업종 */}
           {studentProfile.preferred_categories?.length > 0 && (
             <div>

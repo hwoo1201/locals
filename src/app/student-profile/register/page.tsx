@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { StudentInterest, ShopCategory, AvailableChannels } from "@/types";
+import type { StudentInterest, ShopCategory, AvailableChannels, PortfolioImage } from "@/types";
 
 const INTERESTS: StudentInterest[] = [
   "SNS마케팅",
@@ -49,8 +49,10 @@ export default function StudentProfileRegisterPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [existingProfileId, setExistingProfileId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [interests, setInterests] = useState<StudentInterest[]>([]);
   const [channels, setChannels] = useState<AvailableChannels>({});
@@ -59,6 +61,7 @@ export default function StudentProfileRegisterPage() {
   const [preferredCategories, setPreferredCategories] = useState<ShopCategory[]>([]);
   const [availableRegions, setAvailableRegions] = useState<string[]>([]);
   const [contactMethod, setContactMethod] = useState("");
+  const [portfolioImages, setPortfolioImages] = useState<PortfolioImage[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -96,6 +99,7 @@ export default function StudentProfileRegisterPage() {
         setPortfolioUrl(sp.portfolio_url || "");
         setPreferredCategories(sp.preferred_categories || []);
         setAvailableRegions(sp.available_regions || []);
+        setPortfolioImages(sp.portfolio_images || []);
       }
     };
     load();
@@ -125,6 +129,58 @@ export default function StudentProfileRegisterPage() {
     setChannels((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const handlePortfolioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !userId) return;
+    if (portfolioImages.length >= 3) {
+      setError("작업물 이미지는 최대 3장까지 업로드할 수 있습니다.");
+      return;
+    }
+
+    const remaining = 3 - portfolioImages.length;
+    const filesToUpload = Array.from(files).slice(0, remaining);
+
+    for (const file of filesToUpload) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError("파일 크기는 5MB 이하여야 합니다.");
+        return;
+      }
+    }
+
+    setUploading(true);
+    setError("");
+    const uploaded: PortfolioImage[] = [];
+
+    for (const file of filesToUpload) {
+      const ext = file.name.split(".").pop();
+      const fileName = `${userId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("portfolio-images")
+        .upload(fileName, file);
+
+      if (!uploadError) {
+        const { data: { publicUrl } } = supabase.storage
+          .from("portfolio-images")
+          .getPublicUrl(fileName);
+        uploaded.push({ url: publicUrl, caption: "" });
+      }
+    }
+
+    setPortfolioImages((prev) => [...prev, ...uploaded]);
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removePortfolioImage = (idx: number) => {
+    setPortfolioImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const updateCaption = (idx: number, caption: string) => {
+    setPortfolioImages((prev) =>
+      prev.map((img, i) => (i === idx ? { ...img, caption } : img))
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) return;
@@ -143,6 +199,7 @@ export default function StudentProfileRegisterPage() {
       portfolio_url: portfolioUrl || null,
       preferred_categories: preferredCategories,
       available_regions: availableRegions,
+      portfolio_images: portfolioImages,
     };
 
     let dbError;
@@ -249,6 +306,66 @@ export default function StudentProfileRegisterPage() {
               className="input-field"
             />
           </div>
+        </div>
+
+        {/* 작업물 이미지 */}
+        <div className="card space-y-4">
+          <div>
+            <h2 className="font-bold text-gray-900 text-lg">작업물 이미지</h2>
+            <p className="text-sm text-gray-500 mt-0.5">최대 3장 · 5MB 이하 · JPG, PNG, WebP</p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            {portfolioImages.map((img, idx) => (
+              <div key={idx} className="w-full">
+                <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-gray-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.url} alt={`작업물 ${idx + 1}`} className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removePortfolioImage(idx)}
+                    className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm flex items-center justify-center hover:bg-red-600 transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={img.caption}
+                  onChange={(e) => updateCaption(idx, e.target.value)}
+                  placeholder="한 줄 설명 (선택)"
+                  className="input-field mt-2 text-sm"
+                />
+              </div>
+            ))}
+
+            {portfolioImages.length < 3 && (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors text-sm gap-1"
+              >
+                {uploading ? (
+                  "업로드 중..."
+                ) : (
+                  <>
+                    <span className="text-2xl font-light">+</span>
+                    <span>이미지 추가 ({portfolioImages.length}/3)</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            multiple
+            className="hidden"
+            onChange={handlePortfolioUpload}
+          />
         </div>
 
         {/* 선호 업종 */}

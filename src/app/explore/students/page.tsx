@@ -183,8 +183,23 @@ export default function ExploreStudentsPage() {
             <Link
               key={profile.user_id}
               href={`/profile/${profile.user_id}`}
-              className="card hover:shadow-md transition-all hover:-translate-y-0.5 group"
+              className="card hover:shadow-md transition-all hover:-translate-y-0.5 group overflow-hidden !p-0"
             >
+              {/* 썸네일 */}
+              {studentProfile.portfolio_images?.[0] ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={studentProfile.portfolio_images[0].url}
+                  alt="작업물 썸네일"
+                  className="w-full h-36 object-cover"
+                />
+              ) : (
+                <div className="w-full h-36 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
+                  <span className="text-3xl font-black text-orange-200">M</span>
+                </div>
+              )}
+
+              <div className="p-5">
               {/* 아바타 */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -242,6 +257,7 @@ export default function ExploreStudentsPage() {
                 <span className="text-xs text-blue-600 font-medium group-hover:underline">
                   프로필 보기 →
                 </span>
+              </div>
               </div>
             </Link>
           ))}

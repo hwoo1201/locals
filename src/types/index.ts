@@ -61,6 +61,11 @@ export interface AvailableChannels {
   twitter?: boolean;
 }
 
+export interface PortfolioImage {
+  url: string;
+  caption: string;
+}
+
 export interface StudentProfile {
   id: string;
   user_id: string;
@@ -68,6 +73,7 @@ export interface StudentProfile {
   available_channels: AvailableChannels;
   experience?: string;
   portfolio_url?: string;
+  portfolio_images: PortfolioImage[];
   preferred_categories: ShopCategory[];
   available_regions: string[];
   created_at: string;
