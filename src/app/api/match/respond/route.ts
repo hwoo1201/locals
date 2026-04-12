@@ -94,13 +94,15 @@ export async function POST(req: NextRequest) {
         adminClient.auth.admin.getUserById(matchRequest.requester_id),
       ]);
 
-      const [{ data: shop }, { data: targetProfile }] = await Promise.all([
+      const [{ data: shop }, { data: targetProfile }, { data: requesterProfile }] = await Promise.all([
         supabase.from("shops").select("name").eq("id", matchRequest.shop_id).single(),
         supabase.from("profiles").select("name, contact_method").eq("user_id", user.id).single(),
+        supabase.from("profiles").select("name").eq("user_id", matchRequest.requester_id).single(),
       ]);
 
       if (requesterAuth?.email && shop && targetProfile) {
         if (action === "accept" && projectId) {
+          // 대학생(요청자)에게 수락 알림
           await sendMatchAcceptedEmail({
             toEmail: requesterAuth.email,
             toName: requesterAuth.user_metadata?.name || "사용자",
@@ -108,7 +110,19 @@ export async function POST(req: NextRequest) {
             shopName: (shop as { name: string }).name,
             projectId,
             fromContactMethod: (targetProfile as { name: string; contact_method?: string }).contact_method,
+            agreedPay: parsedPay,
           });
+          // 소상공인(수락자)에게도 매칭 성사 알림
+          if (user.email) {
+            await sendMatchAcceptedEmail({
+              toEmail: user.email,
+              toName: (targetProfile as { name: string }).name,
+              fromName: (requesterProfile as { name: string } | null)?.name || "대학생",
+              shopName: (shop as { name: string }).name,
+              projectId,
+              agreedPay: parsedPay,
+            });
+          }
         } else if (action === "reject") {
           await sendMatchRejectedEmail({
             toEmail: requesterAuth.email,

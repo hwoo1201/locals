@@ -21,12 +21,14 @@ export async function sendMatchRequestEmail({
   fromName,
   shopName,
   message,
+  proposedPay,
 }: {
   toEmail: string;
   toName: string;
   fromName: string;
   shopName: string;
   message?: string;
+  proposedPay?: number | null;
 }) {
   const safeToName = escapeHtml(toName);
   const safeFromName = escapeHtml(fromName);
@@ -47,6 +49,13 @@ export async function sendMatchRequestEmail({
           안녕하세요, <strong>${safeToName}</strong>님!<br/>
           <strong>${safeFromName}</strong>님이 <strong>${safeShopName}</strong> 관련 매칭을 요청했습니다.
         </p>
+
+        ${proposedPay != null ? `
+        <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px; margin: 20px 0;">
+          <p style="color: #c2410c; font-weight: bold; margin: 0 0 4px 0; font-size: 13px;">제안 급여</p>
+          <p style="color: #9a3412; font-size: 18px; font-weight: bold; margin: 0;">${proposedPay}만원/월</p>
+        </div>
+        ` : ""}
 
         ${safeMessage ? `
         <div style="background: #f9fafb; border-left: 4px solid #2563eb; padding: 16px; border-radius: 4px; margin: 20px 0;">
@@ -74,6 +83,7 @@ export async function sendMatchAcceptedEmail({
   shopName,
   projectId,
   fromContactMethod,
+  agreedPay,
 }: {
   toEmail: string;
   toName: string;
@@ -81,6 +91,7 @@ export async function sendMatchAcceptedEmail({
   shopName: string;
   projectId: string;
   fromContactMethod?: string;
+  agreedPay?: number | null;
 }) {
   const safeToName = escapeHtml(toName);
   const safeFromName = escapeHtml(fromName);
@@ -102,6 +113,14 @@ export async function sendMatchAcceptedEmail({
           <strong>${safeFromName}</strong>님이 매칭 요청을 <strong style="color: #16a34a;">수락</strong>했습니다.<br/>
           <strong>${safeShopName}</strong> 프로젝트가 시작되었습니다!
         </p>
+
+        ${agreedPay != null ? `
+        <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 16px; margin: 20px 0;">
+          <p style="color: #c2410c; font-weight: bold; margin: 0 0 4px 0; font-size: 13px;">합의 급여</p>
+          <p style="color: #9a3412; font-size: 20px; font-weight: bold; margin: 0;">${agreedPay}만원/월</p>
+          <p style="color: #ea580c; font-size: 12px; margin: 6px 0 0 0;">첫 달 급여의 20% (${Math.round(agreedPay * 0.2)}만원)가 플랫폼 수수료로 1회 부과됩니다</p>
+        </div>
+        ` : ""}
 
         ${safeContactMethod ? `
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 20px 0;">

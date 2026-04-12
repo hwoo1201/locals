@@ -13,6 +13,7 @@ interface Props {
   targetShopId?: string;            // 상대가 owner일 때 상대 shop id
   targetShopName?: string;
   existingStatus?: "pending" | "accepted" | "rejected" | null;
+  avgPayHint?: number | null;       // pay_stats 기반 평균 급여 힌트
 }
 
 export default function MatchRequestButton({
@@ -23,6 +24,7 @@ export default function MatchRequestButton({
   targetShopId,
   targetShopName,
   existingStatus,
+  avgPayHint,
 }: Props) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,7 +32,6 @@ export default function MatchRequestButton({
   const [status, setStatus] = useState(existingStatus);
   const [toast, setToast] = useState<string | null>(null);
 
-  // 매칭 요청 가능 여부 체크
   // 소상공인 → 대학생: shop_id = 내 shop
   // 대학생 → 소상공인: shop_id = 상대 shop
   const shopId = currentUserType === "owner" ? currentUserShopId : targetShopId;
@@ -39,7 +40,6 @@ export default function MatchRequestButton({
     : targetShopName;
 
   if (!shopId) {
-    // 소상공인인데 매장 미등록
     if (currentUserType === "owner") {
       return (
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-sm text-yellow-800">
@@ -49,7 +49,6 @@ export default function MatchRequestButton({
         </div>
       );
     }
-    // 대학생인데 상대 shop 없음
     return null;
   }
 
@@ -69,7 +68,7 @@ export default function MatchRequestButton({
     );
   }
 
-  const handleSubmit = async (message: string) => {
+  const handleSubmit = async (message: string, proposedPay: number | null) => {
     const res = await fetch("/api/match/request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -77,6 +76,7 @@ export default function MatchRequestButton({
         target_id: targetUserId,
         shop_id: shopId,
         message,
+        proposed_pay: proposedPay,
       }),
     });
 
@@ -112,6 +112,7 @@ export default function MatchRequestButton({
         <MatchRequestModal
           targetName={targetName}
           shopName={shopName}
+          avgPayHint={avgPayHint}
           onClose={() => setModalOpen(false)}
           onSubmit={handleSubmit}
         />

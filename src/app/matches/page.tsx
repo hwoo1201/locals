@@ -211,6 +211,13 @@ export default function MatchesPage() {
                     </p>
                   )}
 
+                  {/* 제안 급여 */}
+                  {match.proposed_pay != null && (
+                    <p className="text-sm text-orange-600 font-semibold mt-1">
+                      제안 급여: {match.proposed_pay}만원/월
+                    </p>
+                  )}
+
                   {/* 메시지 */}
                   {match.message && (
                     <p className="text-sm text-gray-600 mt-2 bg-gray-50 rounded-lg p-2 line-clamp-2">
@@ -300,7 +307,7 @@ export default function MatchesPage() {
                         거절
                       </button>
                       <button
-                        onClick={() => { setAcceptingMatchId(match.id); setSelectedWeeks(4); setAgreedPay(""); }}
+                        onClick={() => { setAcceptingMatchId(match.id); setSelectedWeeks(4); setAgreedPay(match.proposed_pay != null ? String(match.proposed_pay) : ""); }}
                         disabled={responding === match.id}
                         className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >

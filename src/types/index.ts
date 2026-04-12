@@ -89,6 +89,7 @@ export interface MatchRequest {
   shop_id: string;
   status: "pending" | "accepted" | "rejected";
   message?: string;
+  proposed_pay?: number | null;   // 요청 시 제안 월 급여 (만원)
   created_at: string;
 }
 

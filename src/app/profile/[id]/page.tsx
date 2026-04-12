@@ -73,9 +73,9 @@ export default async function ProfilePage({ params }: Props) {
     if (cp?.user_type === "owner") {
       const { data: cs } = await supabase
         .from("shops")
-        .select("id")
+        .select("id, category")
         .eq("owner_id", user.id)
-        .single<{ id: string }>();
+        .single<{ id: string; category: string }>();
       currentShop = cs as Shop | null;
     }
 
@@ -88,6 +88,22 @@ export default async function ProfilePage({ params }: Props) {
       .in("status", ["pending", "accepted"])
       .maybeSingle<{ status: "pending" | "accepted" | "rejected" }>();
     existingRequest = req;
+  }
+
+  // pay_stats 평균 급여 힌트 조회
+  const shopCategory = profile.user_type === "owner"
+    ? shop?.category
+    : (currentShop as { id: string; category?: string } | null)?.category;
+
+  let avgPayHint: number | null = null;
+  if (shopCategory) {
+    const { data: payStat } = await supabase
+      .from("pay_stats")
+      .select("avg_pay")
+      .eq("category", shopCategory)
+      .limit(1)
+      .maybeSingle<{ avg_pay: number }>();
+    avgPayHint = payStat?.avg_pay ?? null;
   }
 
   const showMatchButton = user && user.id !== id && currentProfile;
@@ -111,6 +127,7 @@ export default async function ProfilePage({ params }: Props) {
               targetShopId={shop?.id}
               targetShopName={shop?.name}
               existingStatus={existingRequest?.status ?? null}
+              avgPayHint={avgPayHint}
             />
           ) : null}
         />
@@ -131,6 +148,7 @@ export default async function ProfilePage({ params }: Props) {
               targetShopId={undefined}
               targetShopName={undefined}
               existingStatus={existingRequest?.status ?? null}
+              avgPayHint={avgPayHint}
             />
           ) : null}
         />

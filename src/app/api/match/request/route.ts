@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
     }
 
-    const { target_id, shop_id, message } = await req.json();
+    const { target_id, shop_id, message, proposed_pay } = await req.json();
 
     if (!target_id || !shop_id) {
       return NextResponse.json({ error: "필수 값이 누락됐습니다." }, { status: 400 });
@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "이미 보낸 요청이 있습니다." }, { status: 409 });
     }
 
+    const parsedProposedPay = proposed_pay != null && proposed_pay !== "" ? Number(proposed_pay) : null;
+
     const { data: matchRequest, error: insertError } = await supabase
       .from("match_requests")
       .insert({
@@ -46,6 +48,7 @@ export async function POST(req: NextRequest) {
         target_id,
         shop_id,
         message: message || null,
+        proposed_pay: parsedProposedPay,
         status: "pending",
       })
       .select()
@@ -81,6 +84,7 @@ export async function POST(req: NextRequest) {
           fromName: (requesterProfile as { name: string }).name,
           shopName: (shop as { name: string }).name,
           message,
+          proposedPay: parsedProposedPay,
         });
       }
     } catch (emailErr) {

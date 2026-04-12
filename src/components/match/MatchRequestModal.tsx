@@ -5,12 +5,14 @@ import { useState } from "react";
 interface Props {
   targetName: string;
   shopName?: string;
+  avgPayHint?: number | null;
   onClose: () => void;
-  onSubmit: (message: string) => Promise<void>;
+  onSubmit: (message: string, proposedPay: number | null) => Promise<void>;
 }
 
-export default function MatchRequestModal({ targetName, shopName, onClose, onSubmit }: Props) {
+export default function MatchRequestModal({ targetName, shopName, avgPayHint, onClose, onSubmit }: Props) {
   const [message, setMessage] = useState("");
+  const [proposedPay, setProposedPay] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,7 +21,8 @@ export default function MatchRequestModal({ targetName, shopName, onClose, onSub
     setError("");
     setLoading(true);
     try {
-      await onSubmit(message);
+      const pay = proposedPay !== "" && Number(proposedPay) > 0 ? Number(proposedPay) : null;
+      await onSubmit(message, pay);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "요청에 실패했습니다.");
       setLoading(false);
@@ -47,6 +50,35 @@ export default function MatchRequestModal({ targetName, shopName, onClose, onSub
 
         {/* 폼 */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* 제안 급여 */}
+          <div>
+            <label className="label">
+              제안 월 급여 <span className="text-gray-400 font-normal">(선택)</span>
+            </label>
+            {avgPayHint != null && (
+              <p className="text-xs text-blue-500 mb-2">
+                이 업종 평균 급여: {avgPayHint}만 원
+              </p>
+            )}
+            <div className="relative">
+              <input
+                type="number"
+                value={proposedPay}
+                onChange={(e) => setProposedPay(e.target.value)}
+                placeholder="예: 15"
+                min={0}
+                className="input-field pr-12 text-sm"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs">만원/월</span>
+            </div>
+            {proposedPay !== "" && Number(proposedPay) > 0 && (
+              <p className="text-xs text-orange-500 mt-1">
+                플랫폼 수수료 20% → 실수령 {Math.round(Number(proposedPay) * 0.8)}만원
+              </p>
+            )}
+          </div>
+
+          {/* 메시지 */}
           <div>
             <label className="label">
               메시지 <span className="text-gray-400 font-normal">(선택)</span>
@@ -55,7 +87,7 @@ export default function MatchRequestModal({ targetName, shopName, onClose, onSub
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={`${targetName}님에게 전하고 싶은 말을 적어주세요.\n예: 저는 인스타그램 릴스 제작에 강점이 있는 대학생입니다. 함께 일하고 싶습니다!`}
-              rows={5}
+              rows={4}
               maxLength={500}
               className="input-field resize-none"
             />
