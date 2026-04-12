@@ -16,7 +16,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-bold text-gray-900 text-base mb-3">제1조 (목적)</h2>
           <p>
-            이 약관은 LOCALS(로컬스, 이하 "서비스")가 제공하는 소상공인 × 대학생 마케팅 매칭 플랫폼 서비스의 이용 조건 및 절차, 권리·의무 등 기본적인 사항을 규정함을 목적으로 합니다.
+            이 약관은 LOCALS(로컬스, 이하 &ldquo;서비스&rdquo;)가 제공하는 소상공인 × 대학생 마케팅 매칭 플랫폼 서비스의 이용 조건 및 절차, 권리·의무 등 기본적인 사항을 규정함을 목적으로 합니다.
           </p>
         </section>
 
