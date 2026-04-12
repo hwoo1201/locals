@@ -303,7 +303,8 @@ export default function ShopRegisterPage() {
           </div>
 
           <div>
-            <label className="label">월 예산 범위</label>
+            <label className="label">대학생 월 급여 범위</label>
+            <p className="text-xs text-gray-400 -mt-2 mb-1">대학생에게 지급할 월 급여 범위입니다. 매칭 후 협의로 확정됩니다.</p>
             <select
               value={budgetRange}
               onChange={(e) => setBudgetRange(e.target.value as BudgetRange)}

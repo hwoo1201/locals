@@ -28,6 +28,7 @@ export default function MatchesPage() {
   const [responding, setResponding] = useState<string | null>(null);
   const [acceptingMatchId, setAcceptingMatchId] = useState<string | null>(null);
   const [selectedWeeks, setSelectedWeeks] = useState<number>(4);
+  const [agreedPay, setAgreedPay] = useState<string>("");
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
@@ -81,7 +82,12 @@ export default function MatchesPage() {
     const res = await fetch("/api/match/respond", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ match_id: matchId, action, duration_weeks: durationWeeks }),
+      body: JSON.stringify({
+        match_id: matchId,
+        action,
+        duration_weeks: durationWeeks,
+        agreed_pay: agreedPay !== "" ? Number(agreedPay) : null,
+      }),
     });
 
     if (res.ok) {
@@ -223,28 +229,54 @@ export default function MatchesPage() {
               {tab === "received" && match.status === "pending" && (
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   {acceptingMatchId === match.id ? (
-                    /* 기간 선택 UI */
-                    <div className="space-y-3">
-                      <p className="text-sm font-semibold text-gray-700">프로젝트 기간 선택</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {([2, 4, 8] as const).map((weeks) => (
-                          <button
-                            key={weeks}
-                            type="button"
-                            onClick={() => setSelectedWeeks(weeks)}
-                            className={`py-2 rounded-xl text-xs font-semibold border-2 transition-all ${
-                              selectedWeeks === weeks
-                                ? "border-blue-600 bg-blue-600 text-white"
-                                : "border-gray-200 text-gray-600 hover:border-gray-300"
-                            }`}
-                          >
-                            {weeks === 2 ? "2주\n단기 테스트" : weeks === 4 ? "4주\n기본" : "8주\n장기"}
-                          </button>
-                        ))}
+                    /* 기간 + 급여 협의 UI */
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700 mb-2">프로젝트 기간 선택</p>
+                        <div className="grid grid-cols-3 gap-2">
+                          {([2, 4, 8] as const).map((weeks) => (
+                            <button
+                              key={weeks}
+                              type="button"
+                              onClick={() => setSelectedWeeks(weeks)}
+                              className={`py-2 rounded-xl text-xs font-semibold border-2 transition-all ${
+                                selectedWeeks === weeks
+                                  ? "border-blue-600 bg-blue-600 text-white"
+                                  : "border-gray-200 text-gray-600 hover:border-gray-300"
+                              }`}
+                            >
+                              {weeks === 2 ? "2주\n단기" : weeks === 4 ? "4주\n기본" : "8주\n장기"}
+                            </button>
+                          ))}
+                        </div>
                       </div>
+
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700 mb-1">합의 급여</p>
+                        <p className="text-xs text-gray-400 mb-2">
+                          첫 달 급여의 20%가 플랫폼 수수료로 부과됩니다
+                        </p>
+                        <div className="relative">
+                          <input
+                            type="number"
+                            value={agreedPay}
+                            onChange={(e) => setAgreedPay(e.target.value)}
+                            placeholder="예: 20"
+                            min={0}
+                            className="input-field pr-12 text-sm"
+                          />
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs">만원/월</span>
+                        </div>
+                        {agreedPay !== "" && Number(agreedPay) > 0 && (
+                          <p className="text-xs text-blue-600 mt-1">
+                            수수료: {Math.round(Number(agreedPay) * 0.2)}만원 (20%)
+                          </p>
+                        )}
+                      </div>
+
                       <div className="flex gap-2">
                         <button
-                          onClick={() => setAcceptingMatchId(null)}
+                          onClick={() => { setAcceptingMatchId(null); setAgreedPay(""); }}
                           className="flex-1 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold"
                         >
                           취소
@@ -268,7 +300,7 @@ export default function MatchesPage() {
                         거절
                       </button>
                       <button
-                        onClick={() => { setAcceptingMatchId(match.id); setSelectedWeeks(4); }}
+                        onClick={() => { setAcceptingMatchId(match.id); setSelectedWeeks(4); setAgreedPay(""); }}
                         disabled={responding === match.id}
                         className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >

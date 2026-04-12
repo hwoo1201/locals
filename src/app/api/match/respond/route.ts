@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
     }
 
-    const { match_id, action, duration_weeks } = await req.json();
+    const { match_id, action, duration_weeks, agreed_pay } = await req.json();
 
     if (!match_id || !["accept", "reject"].includes(action)) {
       return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
@@ -57,6 +57,9 @@ export async function POST(req: NextRequest) {
       endDate.setDate(endDate.getDate() + weeks * 7);
       const endDateStr = endDate.toISOString().split("T")[0];
 
+      const parsedPay = agreed_pay != null && agreed_pay !== "" ? Number(agreed_pay) : null;
+      const commissionAmount = parsedPay != null ? Math.round(parsedPay * 0.2) : null;
+
       const { data: project, error: projectError } = await supabase
         .from("projects")
         .insert({
@@ -67,6 +70,10 @@ export async function POST(req: NextRequest) {
           start_date: today,
           end_date: endDateStr,
           duration_weeks: weeks,
+          agreed_pay: parsedPay,
+          commission_rate: 20,
+          commission_amount: commissionAmount,
+          commission_status: "pending",
         })
         .select("id")
         .single();

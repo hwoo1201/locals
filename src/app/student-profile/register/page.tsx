@@ -58,6 +58,7 @@ export default function StudentProfileRegisterPage() {
   const [channels, setChannels] = useState<AvailableChannels>({});
   const [experience, setExperience] = useState("");
   const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [desiredPay, setDesiredPay] = useState<string>("");
   const [preferredCategories, setPreferredCategories] = useState<ShopCategory[]>([]);
   const [availableRegions, setAvailableRegions] = useState<string[]>([]);
   const [contactMethod, setContactMethod] = useState("");
@@ -100,6 +101,7 @@ export default function StudentProfileRegisterPage() {
         setPreferredCategories(sp.preferred_categories || []);
         setAvailableRegions(sp.available_regions || []);
         setPortfolioImages(sp.portfolio_images || []);
+        setDesiredPay(sp.desired_pay != null ? String(sp.desired_pay) : "");
       }
     };
     load();
@@ -200,6 +202,7 @@ export default function StudentProfileRegisterPage() {
       preferred_categories: preferredCategories,
       available_regions: availableRegions,
       portfolio_images: portfolioImages,
+      desired_pay: desiredPay !== "" ? Number(desiredPay) : null,
     };
 
     let dbError;
@@ -305,6 +308,29 @@ export default function StudentProfileRegisterPage() {
               placeholder="https://..."
               className="input-field"
             />
+          </div>
+        </div>
+
+        {/* 희망 급여 */}
+        <div className="card space-y-4">
+          <div>
+            <h2 className="font-bold text-gray-900 text-lg">희망 급여</h2>
+            <p className="text-sm text-gray-500 mt-0.5">소상공인이 참고합니다. 매칭 후 협의 가능합니다.</p>
+          </div>
+          <div>
+            <label className="label">희망 월 급여</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={desiredPay}
+                onChange={(e) => setDesiredPay(e.target.value)}
+                placeholder="예: 20"
+                min={0}
+                className="input-field pr-12"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">만원</span>
+            </div>
+            <p className="text-xs text-gray-400 mt-1">미입력 시 &apos;협의 가능&apos;으로 표시됩니다</p>
           </div>
         </div>
 

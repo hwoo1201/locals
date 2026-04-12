@@ -75,6 +75,9 @@ export interface StudentProfile {
   portfolio_images: PortfolioImage[];
   preferred_categories: ShopCategory[];
   available_regions: string[];
+  desired_pay?: number | null;           // 희망 월 급여 (만원)
+  completed_projects_count: number;       // 완료 프로젝트 수
+  avg_pay?: number | null;               // 지금까지 받은 평균 급여 (만원)
   created_at: string;
   updated_at: string;
 }
@@ -89,6 +92,8 @@ export interface MatchRequest {
   created_at: string;
 }
 
+export type CommissionStatus = "pending" | "paid" | "waived";
+
 export interface Project {
   id: string;
   shop_id: string;
@@ -98,7 +103,22 @@ export interface Project {
   start_date: string;
   end_date?: string;
   duration_weeks?: number;
+  agreed_pay?: number | null;            // 합의된 월 급여 (만원)
+  commission_rate: number;               // 수수료율 (%, 기본 20)
+  commission_amount?: number | null;     // 수수료 금액 (만원)
+  commission_status: CommissionStatus;   // 수수료 납부 상태
   created_at: string;
+}
+
+export interface PayStat {
+  id: string;
+  category: ShopCategory;
+  region: string;
+  avg_pay: number;
+  min_pay: number;
+  max_pay: number;
+  sample_count: number;
+  updated_at: string;
 }
 
 export interface CustomField {
