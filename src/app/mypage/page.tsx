@@ -200,6 +200,54 @@ export default async function MyPage() {
         <ProjectList projects={projects} shopNames={shopNames} />
       </div>
 
+      {/* 수수료 내역 (대학생 전용) */}
+      {!isOwner && (() => {
+        const commissionProjects = projects.filter((p) => p.agreed_pay != null);
+        return (
+          <div className="card space-y-4">
+            <div>
+              <h2 className="font-bold text-gray-900">수수료 내역</h2>
+              <p className="text-xs text-gray-400 mt-0.5">매칭 성사된 프로젝트의 수수료 현황입니다</p>
+            </div>
+
+            <div className="bg-blue-50 rounded-xl px-4 py-3 text-sm text-blue-700">
+              수수료 납부는 계좌이체로 진행됩니다. 매칭 성사 후 안내 이메일을 확인해주세요.
+            </div>
+
+            {commissionProjects.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">아직 급여가 확정된 프로젝트가 없습니다</p>
+            ) : (
+              <div className="space-y-2">
+                {commissionProjects.map((p) => {
+                  const commission = p.commission_amount ?? Math.round((p.agreed_pay ?? 0) * 0.2);
+                  return (
+                    <div key={p.id} className="flex items-center justify-between py-3 border-t border-gray-100 first:border-0 first:pt-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-800 truncate">
+                          {shopNames[p.shop_id] || "매장"}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          합의 급여 {p.agreed_pay}만원 · 수수료 {commission}만원
+                        </p>
+                      </div>
+                      <span className={`ml-3 text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${
+                        p.commission_status === "paid"
+                          ? "bg-green-100 text-green-700"
+                          : p.commission_status === "waived"
+                          ? "bg-gray-100 text-gray-600"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}>
+                        {p.commission_status === "paid" ? "납부완료" : p.commission_status === "waived" ? "면제" : "미납"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* 탐색 바로가기 */}
       <div className="card space-y-3">
         <h2 className="font-bold text-gray-900">바로가기</h2>

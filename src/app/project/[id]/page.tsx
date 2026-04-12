@@ -112,9 +112,8 @@ export default async function ProjectPage({ params }: Props) {
         <p className="text-gray-500 mt-1">마케팅 협업 프로젝트</p>
       </div>
 
-      {/* 효과 분석 */}
-      <div className="space-y-2">
-        <h2 className="font-bold text-gray-900">효과 분석</h2>
+      {/* 효과 분석 (숨김 처리 - 추후 활성화) */}
+      <div className="hidden">
         <ProjectAnalytics
           before={beforeMetric}
           after={afterMetric}
@@ -175,34 +174,50 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         )}
 
-        {/* 급여·수수료 정보 (참여자에게만 표시) */}
+        {/* 급여 정보 */}
         {project.agreed_pay != null && (
+          <div className="bg-blue-50 rounded-xl px-4 py-3">
+            <p className="text-xs text-blue-500 mb-0.5">합의 월 급여</p>
+            <p className="font-bold text-blue-900 text-lg">{project.agreed_pay}만원</p>
+          </div>
+        )}
+
+        {/* 수수료 정보 - 대학생에게만 표시 */}
+        {isStudent && project.agreed_pay != null && (
           <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 space-y-2">
-            <p className="text-xs font-semibold text-orange-500 uppercase tracking-wide">급여 정보</p>
+            <p className="text-xs font-semibold text-orange-500 uppercase tracking-wide">수수료 안내</p>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">합의 월 급여</span>
-              <span className="font-bold text-gray-900">{project.agreed_pay}만원</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">플랫폼 수수료 (20%)</span>
+              <span className="text-sm text-gray-600">플랫폼 수수료 (첫 달 20%)</span>
               <span className="font-semibold text-orange-600">
                 {project.commission_amount ?? Math.round(project.agreed_pay * 0.2)}만원
               </span>
             </div>
             <div className="border-t border-orange-200 pt-2 flex justify-between items-center">
-              <span className="text-sm font-semibold text-gray-700">대학생 실수령</span>
+              <span className="text-sm font-semibold text-gray-700">실수령액</span>
               <span className="font-bold text-green-700">
                 {project.agreed_pay - (project.commission_amount ?? Math.round(project.agreed_pay * 0.2))}만원
               </span>
             </div>
-            <p className="text-xs text-gray-400">
-              수수료는 첫 달 급여에서만 1회 부과됩니다 ·{" "}
-              {project.commission_status === "paid"
-                ? "✓ 납부 완료"
-                : project.commission_status === "waived"
-                ? "면제됨"
-                : "납부 대기 중"}
-            </p>
+            <div className="flex items-center justify-between pt-1">
+              <p className="text-xs text-gray-400">수수료는 첫 달에만 1회 부과됩니다</p>
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                project.commission_status === "paid"
+                  ? "bg-green-100 text-green-700"
+                  : project.commission_status === "waived"
+                  ? "bg-gray-100 text-gray-600"
+                  : "bg-yellow-100 text-yellow-700"
+              }`}>
+                {project.commission_status === "paid" ? "납부완료" : project.commission_status === "waived" ? "면제" : "미납"}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* 소상공인 비용 없음 안내 */}
+        {isOwner && (
+          <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3 flex items-center gap-2">
+            <span className="text-green-600 text-base font-bold">✓</span>
+            <p className="text-sm text-green-700 font-medium">소상공인 플랫폼 비용은 없습니다</p>
           </div>
         )}
       </div>

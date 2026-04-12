@@ -48,6 +48,7 @@ function SignupForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [region, setRegion] = useState("");
+  const [commissionAgreed, setCommissionAgreed] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -62,6 +63,10 @@ function SignupForm() {
     }
     if (!isPasswordValid) {
       setError("비밀번호 조건을 모두 충족해주세요.");
+      return;
+    }
+    if (userType === "student" && !commissionAgreed) {
+      setError("수수료 정책에 동의해주세요.");
       return;
     }
     setError("");
@@ -219,6 +224,30 @@ function SignupForm() {
               />
             </div>
 
+            {/* 대학생 수수료 안내 */}
+            {userType === "student" && (
+              <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 space-y-3">
+                <div>
+                  <p className="text-sm font-bold text-orange-800 mb-1">수수료 안내</p>
+                  <p className="text-xs text-orange-700 leading-relaxed">
+                    LOCALS는 매칭 성사 시 <strong>첫 달 급여의 20%</strong>를 수수료로 <strong>1회만</strong> 받습니다.
+                  </p>
+                  <p className="text-xs text-orange-600 mt-1">이후 추가 비용은 없습니다.</p>
+                </div>
+                <label className="flex items-start gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={commissionAgreed}
+                    onChange={(e) => setCommissionAgreed(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-orange-300 accent-orange-500 flex-shrink-0"
+                  />
+                  <span className="text-xs font-semibold text-orange-800">
+                    수수료 정책에 동의합니다 (필수)
+                  </span>
+                </label>
+              </div>
+            )}
+
             {error && (
               <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl">
                 {error}
@@ -227,7 +256,7 @@ function SignupForm() {
 
             <button
               type="submit"
-              disabled={loading || !userType}
+              disabled={loading || !userType || (userType === "student" && !commissionAgreed)}
               className="btn-primary w-full text-center mt-2"
             >
               {loading ? "가입 중..." : "회원가입 완료"}

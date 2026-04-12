@@ -38,13 +38,48 @@ export async function POST(
 
     const { error } = await admin
       .from("projects")
-      .update({ status: "completed" })
+      .update({ status: "completed", end_date: new Date().toISOString().split("T")[0] })
       .eq("id", id);
 
     if (error) {
       Sentry.captureException(error, { extra: { context: "project/complete - update" } });
       console.error("프로젝트 완료 처리 실패:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // 대학생 통계 업데이트: completed_projects_count + avg_pay 재계산
+    try {
+      const studentId = project.student_id;
+
+      const { data: completedProjects } = await admin
+        .from("projects")
+        .select("agreed_pay")
+        .eq("student_id", studentId)
+        .eq("status", "completed");
+
+      const completedCount = completedProjects?.length ?? 0;
+      const paidProjects = (completedProjects ?? []).filter(
+        (p: { agreed_pay: number | null }) => p.agreed_pay != null
+      );
+      const newAvgPay =
+        paidProjects.length > 0
+          ? Math.round(
+              paidProjects.reduce((s: number, p: { agreed_pay: number }) => s + p.agreed_pay, 0) /
+                paidProjects.length
+            )
+          : null;
+
+      await admin
+        .from("student_profiles")
+        .update({
+          completed_projects_count: completedCount,
+          avg_pay: newAvgPay,
+        })
+        .eq("user_id", studentId);
+    } catch (statsErr) {
+      // 통계 업데이트 실패해도 완료 처리 자체는 성공
+      Sentry.captureException(statsErr, { extra: { context: "project/complete - stats update" } });
+      console.error("대학생 통계 업데이트 실패:", statsErr);
     }
 
     return NextResponse.json({ success: true });
