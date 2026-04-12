@@ -6,6 +6,15 @@ function getResend() {
 const FROM = process.env.RESEND_FROM_EMAIL || "noreply@locals.kr";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export async function sendMatchRequestEmail({
   toEmail,
   toName,
@@ -19,6 +28,11 @@ export async function sendMatchRequestEmail({
   shopName: string;
   message?: string;
 }) {
+  const safeToName = escapeHtml(toName);
+  const safeFromName = escapeHtml(fromName);
+  const safeShopName = escapeHtml(shopName);
+  const safeMessage = message ? escapeHtml(message) : undefined;
+
   await getResend().emails.send({
     from: `LOCALS <${FROM}>`,
     to: toEmail,
@@ -30,13 +44,13 @@ export async function sendMatchRequestEmail({
 
         <h2 style="font-size: 20px; color: #111827;">새 매칭 요청이 도착했어요</h2>
         <p style="color: #374151; line-height: 1.6;">
-          안녕하세요, <strong>${toName}</strong>님!<br/>
-          <strong>${fromName}</strong>님이 <strong>${shopName}</strong> 관련 매칭을 요청했습니다.
+          안녕하세요, <strong>${safeToName}</strong>님!<br/>
+          <strong>${safeFromName}</strong>님이 <strong>${safeShopName}</strong> 관련 매칭을 요청했습니다.
         </p>
 
-        ${message ? `
+        ${safeMessage ? `
         <div style="background: #f9fafb; border-left: 4px solid #2563eb; padding: 16px; border-radius: 4px; margin: 20px 0;">
-          <p style="color: #374151; margin: 0; font-style: italic;">"${message}"</p>
+          <p style="color: #374151; margin: 0; font-style: italic;">"${safeMessage}"</p>
         </div>
         ` : ""}
 
@@ -68,6 +82,11 @@ export async function sendMatchAcceptedEmail({
   projectId: string;
   fromContactMethod?: string;
 }) {
+  const safeToName = escapeHtml(toName);
+  const safeFromName = escapeHtml(fromName);
+  const safeShopName = escapeHtml(shopName);
+  const safeContactMethod = fromContactMethod ? escapeHtml(fromContactMethod) : undefined;
+
   await getResend().emails.send({
     from: `LOCALS <${FROM}>`,
     to: toEmail,
@@ -79,15 +98,15 @@ export async function sendMatchAcceptedEmail({
 
         <h2 style="font-size: 20px; color: #111827;">매칭이 성사됐어요!</h2>
         <p style="color: #374151; line-height: 1.6;">
-          안녕하세요, <strong>${toName}</strong>님!<br/>
-          <strong>${fromName}</strong>님이 매칭 요청을 <strong style="color: #16a34a;">수락</strong>했습니다.<br/>
-          <strong>${shopName}</strong> 프로젝트가 시작되었습니다!
+          안녕하세요, <strong>${safeToName}</strong>님!<br/>
+          <strong>${safeFromName}</strong>님이 매칭 요청을 <strong style="color: #16a34a;">수락</strong>했습니다.<br/>
+          <strong>${safeShopName}</strong> 프로젝트가 시작되었습니다!
         </p>
 
-        ${fromContactMethod ? `
+        ${safeContactMethod ? `
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 20px 0;">
           <p style="color: #15803d; font-weight: bold; margin: 0 0 4px 0; font-size: 13px;">상대방 연락처</p>
-          <p style="color: #166534; font-size: 15px; font-weight: bold; margin: 0;">${fromContactMethod}</p>
+          <p style="color: #166534; font-size: 15px; font-weight: bold; margin: 0;">${safeContactMethod}</p>
         </div>
         ` : ""}
 
@@ -115,6 +134,9 @@ export async function sendMatchRejectedEmail({
   fromName: string;
   shopName: string;
 }) {
+  const safeToName = escapeHtml(toName);
+  const safeFromName = escapeHtml(fromName);
+
   await getResend().emails.send({
     from: `LOCALS <${FROM}>`,
     to: toEmail,
@@ -126,8 +148,8 @@ export async function sendMatchRejectedEmail({
 
         <h2 style="font-size: 20px; color: #111827;">매칭 요청 결과</h2>
         <p style="color: #374151; line-height: 1.6;">
-          안녕하세요, <strong>${toName}</strong>님!<br/>
-          아쉽게도 <strong>${fromName}</strong>님이 이번 매칭 요청을 거절했습니다.<br/>
+          안녕하세요, <strong>${safeToName}</strong>님!<br/>
+          아쉽게도 <strong>${safeFromName}</strong>님이 이번 매칭 요청을 거절했습니다.<br/>
           다른 파트너를 찾아보세요!
         </p>
 

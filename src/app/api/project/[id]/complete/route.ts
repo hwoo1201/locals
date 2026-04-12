@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
+import { checkRateLimit, generalLimiter } from "@/lib/ratelimit";
 
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const rateLimitRes = await checkRateLimit(_req, generalLimiter);
+  if (rateLimitRes) return rateLimitRes;
+
   try {
     const { id } = await params;
     const supabase = await createServerSupabaseClient();
