@@ -26,6 +26,8 @@ export default function MatchesPage() {
   const [sent, setSent] = useState<MatchWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [responding, setResponding] = useState<string | null>(null);
+  const [acceptingMatchId, setAcceptingMatchId] = useState<string | null>(null);
+  const [selectedWeeks, setSelectedWeeks] = useState<number>(4);
 
   useEffect(() => {
     const load = async () => {
@@ -73,16 +75,15 @@ export default function MatchesPage() {
     load();
   }, [router]);
 
-  const handleRespond = async (matchId: string, action: "accept" | "reject") => {
+  const handleRespond = async (matchId: string, action: "accept" | "reject", durationWeeks?: number) => {
     setResponding(matchId);
     const res = await fetch("/api/match/respond", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ match_id: matchId, action }),
+      body: JSON.stringify({ match_id: matchId, action, duration_weeks: durationWeeks }),
     });
 
     if (res.ok) {
-      // 로컬 상태 업데이트
       setReceived((prev) =>
         prev.map((r) =>
           r.id === matchId
@@ -92,6 +93,7 @@ export default function MatchesPage() {
       );
     }
     setResponding(null);
+    setAcceptingMatchId(null);
   };
 
   const currentList = tab === "received" ? received : sent;
@@ -208,21 +210,61 @@ export default function MatchesPage() {
 
               {/* 액션 버튼 (받은 요청 + pending 상태일 때만) */}
               {tab === "received" && match.status === "pending" && (
-                <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
-                  <button
-                    onClick={() => handleRespond(match.id, "reject")}
-                    disabled={responding === match.id}
-                    className="flex-1 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:border-red-300 hover:text-red-600 transition-colors disabled:opacity-50"
-                  >
-                    거절
-                  </button>
-                  <button
-                    onClick={() => handleRespond(match.id, "accept")}
-                    disabled={responding === match.id}
-                    className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
-                  >
-                    {responding === match.id ? "처리 중..." : "수락"}
-                  </button>
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  {acceptingMatchId === match.id ? (
+                    /* 기간 선택 UI */
+                    <div className="space-y-3">
+                      <p className="text-sm font-semibold text-gray-700">프로젝트 기간 선택</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {([2, 4, 8] as const).map((weeks) => (
+                          <button
+                            key={weeks}
+                            type="button"
+                            onClick={() => setSelectedWeeks(weeks)}
+                            className={`py-2 rounded-xl text-xs font-semibold border-2 transition-all ${
+                              selectedWeeks === weeks
+                                ? "border-blue-600 bg-blue-600 text-white"
+                                : "border-gray-200 text-gray-600 hover:border-gray-300"
+                            }`}
+                          >
+                            {weeks === 2 ? "2주\n단기 테스트" : weeks === 4 ? "4주\n기본" : "8주\n장기"}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setAcceptingMatchId(null)}
+                          className="flex-1 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold"
+                        >
+                          취소
+                        </button>
+                        <button
+                          onClick={() => handleRespond(match.id, "accept", selectedWeeks)}
+                          disabled={responding === match.id}
+                          className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        >
+                          {responding === match.id ? "처리 중..." : `${selectedWeeks}주로 수락`}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleRespond(match.id, "reject")}
+                        disabled={responding === match.id}
+                        className="flex-1 py-2.5 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:border-red-300 hover:text-red-600 transition-colors disabled:opacity-50"
+                      >
+                        거절
+                      </button>
+                      <button
+                        onClick={() => { setAcceptingMatchId(match.id); setSelectedWeeks(4); }}
+                        disabled={responding === match.id}
+                        className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      >
+                        수락
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

@@ -16,11 +16,10 @@ export interface Profile {
 
 export type ShopCategory = "카페" | "음식점" | "소매" | "뷰티" | "기타";
 export type BudgetRange =
-  | "10만원 미만"
-  | "10~30만원"
-  | "30~50만원"
-  | "50~100만원"
-  | "100만원 이상";
+  | "10만 원 미만"
+  | "10~20만 원"
+  | "20~30만 원"
+  | "30만 원 이상";
 
 export interface SnsAccounts {
   instagram?: string;

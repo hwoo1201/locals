@@ -126,32 +126,37 @@ export default async function ProjectPage({ params }: Props) {
       {/* 프로젝트 정보 */}
       <div className="card space-y-4">
         <h2 className="font-bold text-gray-900">프로젝트 정보</h2>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-400 text-xs mb-1">시작일</p>
-            <p className="font-medium">
-              {project.start_date
-                ? new Date(project.start_date).toLocaleDateString("ko-KR")
-                : "-"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-400 text-xs mb-1">종료 예정일</p>
-            <p className="font-medium">
-              {project.end_date
-                ? new Date(project.end_date).toLocaleDateString("ko-KR")
-                : "-"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-400 text-xs mb-1">기간</p>
-            <p className="font-medium">{project.duration_weeks ?? "-"}주</p>
-          </div>
-          <div>
-            <p className="text-gray-400 text-xs mb-1">남은 일수</p>
-            <p className="font-medium">
-              {daysLeft !== null ? `${daysLeft}일` : "-"}
-            </p>
+        <div className="space-y-3 text-sm">
+          {/* 기간 한 줄 요약 */}
+          {project.start_date && (
+            <div className="bg-blue-50 rounded-xl px-4 py-3">
+              <p className="text-xs text-blue-500 mb-0.5">프로젝트 기간</p>
+              <p className="font-semibold text-blue-900">
+                {new Date(project.start_date).toLocaleDateString("ko-KR")}
+                {project.end_date && ` ~ ${new Date(project.end_date).toLocaleDateString("ko-KR")}`}
+                {project.duration_weeks ? ` (${project.duration_weeks}주)` : ""}
+              </p>
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-gray-400 text-xs mb-1">남은 일수</p>
+              <p className="font-medium">
+                {daysLeft === 0 ? "오늘 종료" : daysLeft !== null ? `${daysLeft}일` : "-"}
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">기간 유형</p>
+              <p className="font-medium">
+                {project.duration_weeks === 2
+                  ? "2주 · 단기 테스트"
+                  : project.duration_weeks === 8
+                  ? "8주 · 장기"
+                  : project.duration_weeks
+                  ? "4주 · 기본"
+                  : "-"}
+              </p>
+            </div>
           </div>
         </div>
 

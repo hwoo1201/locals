@@ -7,11 +7,10 @@ import type { ShopCategory, BudgetRange, SnsAccounts } from "@/types";
 
 const CATEGORIES: ShopCategory[] = ["카페", "음식점", "소매", "뷰티", "기타"];
 const BUDGET_RANGES: BudgetRange[] = [
-  "10만원 미만",
-  "10~30만원",
-  "30~50만원",
-  "50~100만원",
-  "100만원 이상",
+  "10만 원 미만",
+  "10~20만 원",
+  "20~30만 원",
+  "30만 원 이상",
 ];
 
 export default function ShopRegisterPage() {
@@ -30,7 +29,7 @@ export default function ShopRegisterPage() {
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [sns, setSns] = useState<SnsAccounts>({});
   const [marketingNeeds, setMarketingNeeds] = useState("");
-  const [budgetRange, setBudgetRange] = useState<BudgetRange>("10~30만원");
+  const [budgetRange, setBudgetRange] = useState<BudgetRange>("10~20만 원");
   const [goals, setGoals] = useState("");
   const [contactMethod, setContactMethod] = useState("");
 

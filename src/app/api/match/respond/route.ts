@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
     }
 
-    const { match_id, action } = await req.json();
+    const { match_id, action, duration_weeks } = await req.json();
 
     if (!match_id || !["accept", "reject"].includes(action)) {
       return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
@@ -47,9 +47,10 @@ export async function POST(req: NextRequest) {
 
     // 수락 시 프로젝트 자동 생성
     if (action === "accept") {
+      const weeks = [2, 4, 8].includes(Number(duration_weeks)) ? Number(duration_weeks) : 4;
       const today = new Date().toISOString().split("T")[0];
       const endDate = new Date();
-      endDate.setDate(endDate.getDate() + 28); // 기본 4주
+      endDate.setDate(endDate.getDate() + weeks * 7);
       const endDateStr = endDate.toISOString().split("T")[0];
 
       const { data: project, error: projectError } = await supabase
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
           status: "active",
           start_date: today,
           end_date: endDateStr,
-          duration_weeks: 4,
+          duration_weeks: weeks,
         })
         .select("id")
         .single();

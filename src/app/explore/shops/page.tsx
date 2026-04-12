@@ -7,7 +7,7 @@ import type { Shop, Profile, ShopCategory, BudgetRange } from "@/types";
 
 const CATEGORIES: ShopCategory[] = ["카페", "음식점", "소매", "뷰티", "기타"];
 const BUDGET_RANGES: BudgetRange[] = [
-  "10만원 미만", "10~30만원", "30~50만원", "50~100만원", "100만원 이상",
+  "10만 원 미만", "10~20만 원", "20~30만 원", "30만 원 이상",
 ];
 const REGIONS = ["서울", "경기", "인천", "부산", "대구", "광주", "대전", "울산", "강원", "충남", "충북", "전북", "전남", "경북", "경남", "제주"];
 
