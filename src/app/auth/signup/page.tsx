@@ -2,12 +2,43 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { useSearchParams } from "next/navigation";
 import type { UserType } from "@/types";
 
+interface PasswordRule {
+  label: string;
+  test: (pw: string) => boolean;
+}
+
+const PASSWORD_RULES: PasswordRule[] = [
+  { label: "8자 이상", test: (pw) => pw.length >= 8 },
+  { label: "숫자 포함", test: (pw) => /[0-9]/.test(pw) },
+  { label: "특수문자 포함", test: (pw) => /[^a-zA-Z0-9]/.test(pw) },
+];
+
+function PasswordStrength({ password }: { password: string }) {
+  if (!password) return null;
+  return (
+    <div className="flex gap-3 mt-2">
+      {PASSWORD_RULES.map(({ label, test }) => {
+        const ok = test(password);
+        return (
+          <span
+            key={label}
+            className={`flex items-center gap-1 text-xs ${ok ? "text-green-600" : "text-gray-400"}`}
+          >
+            <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-white text-[9px] font-bold ${ok ? "bg-green-500" : "bg-gray-300"}`}>
+              ✓
+            </span>
+            {label}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 function SignupForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const initialType = (searchParams.get("type") as UserType) || null;
 
@@ -19,6 +50,9 @@ function SignupForm() {
   const [region, setRegion] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const isPasswordValid = PASSWORD_RULES.every(({ test }) => test(password));
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,10 +60,13 @@ function SignupForm() {
       setError("회원 유형을 선택해주세요.");
       return;
     }
+    if (!isPasswordValid) {
+      setError("비밀번호 조건을 모두 충족해주세요.");
+      return;
+    }
     setError("");
     setLoading(true);
 
-    // 1. 서버 API로 유저+프로필 동시 생성 (RLS 우회)
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,27 +75,49 @@ function SignupForm() {
 
     const json = await res.json();
 
+    setLoading(false);
+
     if (!res.ok) {
       setError(json.error || "회원가입에 실패했습니다.");
-      setLoading(false);
       return;
     }
 
-    // 2. 클라이언트 로그인 (생성된 계정으로)
-    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
-    if (loginError) {
-      setError("가입은 됐으나 로그인에 실패했습니다. 로그인 페이지에서 다시 시도해주세요.");
-      setLoading(false);
-      return;
-    }
-
-    if (userType === "owner") {
-      router.push("/shop/register?new=1");
-    } else {
-      router.push("/student-profile/register?new=1");
-    }
-    router.refresh();
+    setSent(true);
   };
+
+  if (sent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
+              LOCALS
+            </Link>
+          </div>
+          <div className="card text-center space-y-4">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold text-gray-900 text-lg">인증 이메일을 보냈습니다</p>
+              <p className="text-sm text-gray-500 mt-2">
+                <strong>{email}</strong>로 인증 링크를 발송했습니다.<br />
+                이메일을 확인하고 링크를 클릭해주세요.
+              </p>
+              <p className="text-xs text-gray-400 mt-2">
+                이메일이 보이지 않으면 스팸함을 확인해주세요.
+              </p>
+            </div>
+            <Link href="/auth/login" className="btn-primary inline-block mt-2">
+              로그인 페이지로 이동
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
@@ -132,11 +191,12 @@ function SignupForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="최소 6자 이상"
+                placeholder="8자 이상, 숫자·특수문자 포함"
                 required
-                minLength={6}
+                minLength={8}
                 className="input-field"
               />
+              <PasswordStrength password={password} />
             </div>
             <div>
               <label className="label">전화번호</label>
