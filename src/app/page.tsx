@@ -2,16 +2,16 @@ import Link from "next/link";
 
 const features = [
   {
-    title: "매장 등록",
-    desc: "매장 정보와 마케팅 니즈를 등록하세요. 예산과 목표를 설정하면 맞는 대학생을 찾아드립니다.",
+    title: "무료 매칭",
+    desc: "소상공인은 비용 부담 없이 대학생 마케터와 매칭됩니다. 플랫폼 이용료는 없습니다.",
   },
   {
-    title: "대학생 매칭",
-    desc: "마케팅, 영상, 사진, 디자인 등 다양한 분야의 대학생과 연결됩니다.",
+    title: "검증된 대학생",
+    desc: "프로젝트 이력, 리뷰, 평균 급여를 확인하고 딱 맞는 대학생을 선택하세요.",
   },
   {
-    title: "효과 분석",
-    desc: "마케팅 전후 팔로워, 방문객, 매출 변화를 데이터로 확인하세요.",
+    title: "투명한 급여",
+    desc: "업종별 평균 급여를 확인하고, 합리적인 조건으로 협업하세요.",
   },
 ];
 
@@ -36,8 +36,8 @@ export default function Home() {
             <span className="text-orange-400">대학생 마케터</span>와 함께
           </h1>
           <p className="text-lg md:text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-            소상공인은 저렴한 비용으로 SNS 마케팅을,<br />
-            대학생은 실전 포트폴리오와 경험을 얻습니다.
+            소상공인은 검증된 대학생 마케터와 무료로 매칭되고,<br />
+            대학생은 실전 포트폴리오와 급여를 얻습니다.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -61,9 +61,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="grid grid-cols-3 gap-6 text-center">
             {[
-              { num: "간편한", label: "시작" },
+              { num: "무료", label: "소상공인 이용료" },
               { num: "검증된", label: "대학생 매칭" },
-              { num: "마케팅", label: "전후 비교 분석" },
+              { num: "투명한", label: "급여 구조" },
             ].map((item) => (
               <div key={item.label}>
                 <p className="text-3xl md:text-4xl font-black text-blue-600 mb-1">{item.num}</p>
@@ -106,9 +106,9 @@ export default function Home() {
               <h3 className="text-2xl font-black mb-4">소상공인</h3>
               <ul className="space-y-3">
                 {[
-                  "합리적인 비용으로 SNS 마케팅",
+                  "무료로 대학생 마케터 매칭",
+                  "플랫폼 수수료 0원, 대학생에게 급여만 직접 지급",
                   "열정 넘치는 대학생 마케터와 협업",
-                  "마케팅 전후 효과를 데이터로 확인",
                   "카페, 음식점, 소매, 뷰티 등 모든 업종",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm">
@@ -125,8 +125,8 @@ export default function Home() {
                 {[
                   "실전 마케팅 프로젝트 경험",
                   "포트폴리오 구축 기회",
-                  "SNS, 영상, 사진, 디자인 등 다양한 분야",
-                  "지역 소상공인과 의미 있는 협업",
+                  "매칭 성사 시 첫 달 급여의 20%만 1회 수수료",
+                  "이후 추가 비용 없이 자유롭게 활동",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm">
                     <span className="text-blue-200 mt-0.5">•</span>
@@ -166,7 +166,9 @@ export default function Home() {
       <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-black mb-4">지금 바로 시작하세요</h2>
-          <p className="text-blue-100 mb-8">무료로 가입하고 첫 매칭을 경험해보세요</p>
+          <p className="text-blue-100 mb-8">
+            소상공인은 무료, 대학생은 매칭 성사 시에만 수수료. 지금 시작하세요.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth/signup?type=owner"
