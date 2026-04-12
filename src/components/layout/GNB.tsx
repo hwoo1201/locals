@@ -25,8 +25,12 @@ export default function GNB() {
     };
     getProfile();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      getProfile();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        setProfile(null);
+      } else {
+        getProfile();
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
