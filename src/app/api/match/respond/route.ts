@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
     }
 
     let projectId: string | null = null;
+    let parsedPay: number | null = null;
 
     if (action === "accept") {
       const weeks = [2, 4, 8].includes(Number(duration_weeks)) ? Number(duration_weeks) : 4;
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
       endDate.setDate(endDate.getDate() + weeks * 7);
       const endDateStr = endDate.toISOString().split("T")[0];
 
-      const parsedPay = agreed_pay != null && agreed_pay !== "" ? Number(agreed_pay) : null;
+      parsedPay = agreed_pay != null && agreed_pay !== "" ? Number(agreed_pay) : null;
       const commissionAmount = parsedPay != null ? Math.round(parsedPay * 0.2) : null;
 
       const { data: project, error: projectError } = await supabase
