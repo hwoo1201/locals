@@ -11,6 +11,7 @@ type Tab = "received" | "sent";
 interface MatchWithDetails extends MatchRequest {
   otherParty: Profile | null;
   shop: Shop | null;
+  projectId?: string | null;
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -63,11 +64,28 @@ export default function MatchesPage() {
       const profileMap = new Map<string, Profile>((profilesData || []).map((p: Profile) => [p.user_id, p]));
       const shopMap = new Map<string, Shop>((shopsData || []).map((s: Shop) => [s.id, s]));
 
+      // 수락된 매칭의 project_id 조회
+      const acceptedMatchIds = [
+        ...(recvData || []).filter((r: MatchRequest) => r.status === "accepted").map((r: MatchRequest) => r.id),
+        ...(sentData || []).filter((r: MatchRequest) => r.status === "accepted").map((r: MatchRequest) => r.id),
+      ];
+      const projectMap = new Map<string, string>();
+      if (acceptedMatchIds.length > 0) {
+        const { data: projectsData } = await supabase
+          .from("projects")
+          .select("id, match_id")
+          .in("match_id", acceptedMatchIds);
+        (projectsData || []).forEach((p: { id: string; match_id: string }) => {
+          projectMap.set(p.match_id, p.id);
+        });
+      }
+
       const enrich = (items: MatchRequest[], otherKey: "requester_id" | "target_id"): MatchWithDetails[] =>
         (items || []).map((r) => ({
           ...r,
           otherParty: profileMap.get(r[otherKey]) || null,
           shop: shopMap.get(r.shop_id) || null,
+          projectId: projectMap.get(r.id) || null,
         }));
 
       setReceived(enrich(recvData || [], "requester_id"));
@@ -95,7 +113,11 @@ export default function MatchesPage() {
       setReceived((prev) =>
         prev.map((r) =>
           r.id === matchId
-            ? { ...r, status: action === "accept" ? "accepted" : "rejected" }
+            ? {
+                ...r,
+                status: action === "accept" ? "accepted" : "rejected",
+                projectId: json.project_id || r.projectId,
+              }
             : r
         )
       );
@@ -331,12 +353,16 @@ export default function MatchesPage() {
                   ) : (
                     <p className="text-xs text-gray-400">상대방이 아직 연락처를 등록하지 않았습니다</p>
                   )}
-                  <Link
-                    href="/matches"
-                    className="text-sm text-blue-600 hover:underline font-medium block"
-                  >
-                    매칭 성사! 프로젝트를 확인하세요 →
-                  </Link>
+                  {match.projectId ? (
+                    <Link
+                      href={`/project/${match.projectId}`}
+                      className="text-sm text-blue-600 hover:underline font-medium block"
+                    >
+                      매칭 성사! 프로젝트를 확인하세요 →
+                    </Link>
+                  ) : (
+                    <p className="text-sm text-gray-400">프로젝트 준비 중...</p>
+                  )}
                 </div>
               )}
             </div>
