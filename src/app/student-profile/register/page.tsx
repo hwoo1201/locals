@@ -324,13 +324,13 @@ export default function StudentProfileRegisterPage() {
                 type="number"
                 value={desiredPay}
                 onChange={(e) => setDesiredPay(e.target.value)}
-                placeholder="예: 20"
+                placeholder="예: 15"
                 min={0}
                 className="input-field pr-12"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">만원</span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">미입력 시 &apos;협의 가능&apos;으로 표시됩니다</p>
+            <p className="text-xs text-gray-400 mt-1">소상공인에게 보여지는 희망 급여입니다</p>
           </div>
         </div>
 

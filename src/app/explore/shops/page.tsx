@@ -20,6 +20,7 @@ interface ShopCard {
 export default function ExploreShopsPage() {
   const [shops, setShops] = useState<ShopCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [payStatsMap, setPayStatsMap] = useState<Record<string, number>>({});
 
   const [filterRegion, setFilterRegion] = useState("");
   const [filterCategory, setFilterCategory] = useState<ShopCategory | "">("");
@@ -27,9 +28,10 @@ export default function ExploreShopsPage() {
 
   useEffect(() => {
     const load = async () => {
-      const [{ data: shopsData }, { data: profiles }] = await Promise.all([
+      const [{ data: shopsData }, { data: profiles }, { data: payStats }] = await Promise.all([
         supabase.from("shops").select("*"),
         supabase.from("profiles").select("*").eq("user_type", "owner"),
+        supabase.from("pay_stats").select("category, avg_pay"),
       ]);
 
       if (!shopsData || !profiles) { setLoading(false); return; }
@@ -44,6 +46,16 @@ export default function ExploreShopsPage() {
         .filter(Boolean) as ShopCard[];
 
       setShops(cards);
+
+      // pay_stats: 업종별 평균 급여 맵
+      if (payStats) {
+        const map: Record<string, number> = {};
+        (payStats as { category: string; avg_pay: number }[]).forEach(({ category, avg_pay }) => {
+          map[category] = avg_pay;
+        });
+        setPayStatsMap(map);
+      }
+
       setLoading(false);
     };
     load();
@@ -141,6 +153,21 @@ export default function ExploreShopsPage() {
         </div>
       </div>
 
+      {/* 업종별 평균 급여 배너 */}
+      {filterCategory && payStatsMap[filterCategory] != null && (
+        <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 flex items-center gap-3">
+          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-blue-600 text-sm font-bold">₩</span>
+          </div>
+          <div>
+            <p className="text-xs text-blue-500 font-medium">{filterCategory} 업종</p>
+            <p className="text-sm font-bold text-blue-900">
+              대학생 평균 급여: {payStatsMap[filterCategory]}만원/월
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 결과 수 */}
       <div className="mb-4">
         <p className="text-sm text-gray-500">
@@ -193,11 +220,6 @@ export default function ExploreShopsPage() {
                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
                   {shop.category}
                 </span>
-                {shop.budget_range && (
-                  <span className="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">
-                    {shop.budget_range}
-                  </span>
-                )}
               </div>
 
               {/* 매장명 */}
@@ -207,6 +229,13 @@ export default function ExploreShopsPage() {
 
               {/* 주소 */}
               <p className="text-sm text-gray-500 mt-1 truncate">{shop.address}</p>
+
+              {/* 급여 범위 */}
+              {shop.budget_range && (
+                <p className="text-sm font-semibold text-orange-600 mt-1.5">
+                  급여 범위: {shop.budget_range}
+                </p>
+              )}
 
               {/* 요청사항 요약 */}
               {shop.marketing_needs && (

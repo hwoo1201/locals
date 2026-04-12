@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import type { Profile, StudentProfile, StudentInterest } from "@/types";
+import type { Profile, StudentProfile, StudentInterest, BudgetRange } from "@/types";
 
 const INTERESTS: StudentInterest[] = [
   "SNS마케팅", "영상제작", "사진촬영", "디자인", "브랜딩", "기타",
@@ -16,6 +16,18 @@ const SNS_LABELS: Record<string, string> = {
   naver_blog: "네이버 블로그",
   twitter: "트위터",
 };
+const PAY_RANGES: BudgetRange[] = [
+  "10만 원 미만", "10~20만 원", "20~30만 원", "30만 원 이상",
+];
+
+function matchesPayRange(desiredPay: number | null | undefined, range: BudgetRange): boolean {
+  if (desiredPay == null) return false;
+  if (range === "10만 원 미만") return desiredPay < 10;
+  if (range === "10~20만 원") return desiredPay >= 10 && desiredPay <= 20;
+  if (range === "20~30만 원") return desiredPay > 20 && desiredPay <= 30;
+  if (range === "30만 원 이상") return desiredPay > 30;
+  return true;
+}
 
 interface StudentCard {
   profile: Profile;
@@ -29,6 +41,7 @@ export default function ExploreStudentsPage() {
   const [filterRegion, setFilterRegion] = useState("");
   const [filterInterests, setFilterInterests] = useState<StudentInterest[]>([]);
   const [filterChannel, setFilterChannel] = useState("");
+  const [filterPayRange, setFilterPayRange] = useState<BudgetRange | "">("");
 
   useEffect(() => {
     const load = async () => {
@@ -59,9 +72,10 @@ export default function ExploreStudentsPage() {
       if (filterRegion && !profile.region?.includes(filterRegion)) return false;
       if (filterInterests.length > 0 && !filterInterests.some((i) => studentProfile.interests?.includes(i))) return false;
       if (filterChannel && !studentProfile.available_channels?.[filterChannel as keyof typeof studentProfile.available_channels]) return false;
+      if (filterPayRange && !matchesPayRange(studentProfile.desired_pay, filterPayRange)) return false;
       return true;
     });
-  }, [students, filterRegion, filterInterests, filterChannel]);
+  }, [students, filterRegion, filterInterests, filterChannel, filterPayRange]);
 
   const toggleInterest = (interest: StudentInterest) => {
     setFilterInterests((prev) =>
@@ -73,7 +87,10 @@ export default function ExploreStudentsPage() {
     setFilterRegion("");
     setFilterInterests([]);
     setFilterChannel("");
+    setFilterPayRange("");
   };
+
+  const hasActiveFilter = filterRegion || filterInterests.length > 0 || filterChannel || filterPayRange;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -86,9 +103,11 @@ export default function ExploreStudentsPage() {
       <div className="card mb-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-gray-900">필터</h2>
-          <button onClick={resetFilters} className="text-sm text-blue-600 hover:underline">
-            초기화
-          </button>
+          {hasActiveFilter && (
+            <button onClick={resetFilters} className="text-sm text-blue-600 hover:underline">
+              초기화
+            </button>
+          )}
         </div>
 
         {/* 지역 필터 */}
@@ -150,6 +169,26 @@ export default function ExploreStudentsPage() {
             ))}
           </div>
         </div>
+
+        {/* 급여 범위 필터 */}
+        <div>
+          <p className="label">희망 급여 범위</p>
+          <div className="flex flex-wrap gap-2">
+            {PAY_RANGES.map((range) => (
+              <button
+                key={range}
+                onClick={() => setFilterPayRange(filterPayRange === range ? "" : range)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium border-2 transition-all ${
+                  filterPayRange === range
+                    ? "border-green-600 bg-green-600 text-white"
+                    : "border-gray-200 text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                {range}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* 결과 수 */}
@@ -200,64 +239,81 @@ export default function ExploreStudentsPage() {
               )}
 
               <div className="p-5">
-              {/* 아바타 */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-bold text-orange-600">대학생</span>
+                {/* 아바타 + 이름 */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-orange-600">대학생</span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                      {profile.name}
+                    </p>
+                    {profile.region && (
+                      <p className="text-xs text-gray-400 truncate">{profile.region}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-                    {profile.name}
-                  </p>
-                  {profile.region && (
-                    <p className="text-xs text-gray-400 truncate">{profile.region}</p>
+
+                {/* 급여 정보 */}
+                <div className="flex flex-wrap gap-x-3 gap-y-1 mb-3 text-xs">
+                  <span className="text-orange-600 font-semibold">
+                    희망 {studentProfile.desired_pay != null ? `${studentProfile.desired_pay}만원` : "협의"}
+                  </span>
+                  {studentProfile.avg_pay != null && (
+                    <span className="text-green-600 font-semibold">
+                      평균 {studentProfile.avg_pay}만원
+                    </span>
+                  )}
+                  {studentProfile.completed_projects_count > 0 && (
+                    <span className="text-blue-600 font-semibold">
+                      완료 {studentProfile.completed_projects_count}건
+                    </span>
                   )}
                 </div>
-              </div>
 
-              {/* 관심 분야 태그 */}
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {studentProfile.interests?.slice(0, 3).map((interest) => (
-                  <span
-                    key={interest}
-                    className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium"
-                  >
-                    {interest}
+                {/* 관심 분야 태그 */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {studentProfile.interests?.slice(0, 3).map((interest) => (
+                    <span
+                      key={interest}
+                      className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium"
+                    >
+                      {interest}
+                    </span>
+                  ))}
+                  {(studentProfile.interests?.length || 0) > 3 && (
+                    <span className="text-xs text-gray-400">+{studentProfile.interests.length - 3}</span>
+                  )}
+                </div>
+
+                {/* SNS 채널 */}
+                <div className="flex flex-wrap gap-1">
+                  {studentProfile.available_channels?.instagram && (
+                    <span className="text-xs bg-pink-50 text-pink-500 px-2 py-0.5 rounded-full">인스타그램</span>
+                  )}
+                  {studentProfile.available_channels?.youtube && (
+                    <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full">유튜브</span>
+                  )}
+                  {studentProfile.available_channels?.tiktok && (
+                    <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">틱톡</span>
+                  )}
+                  {studentProfile.available_channels?.naver_blog && (
+                    <span className="text-xs bg-green-50 text-green-500 px-2 py-0.5 rounded-full">네이버 블로그</span>
+                  )}
+                </div>
+
+                {/* 경험 요약 */}
+                {studentProfile.experience && (
+                  <p className="text-xs text-gray-500 mt-3 line-clamp-2 leading-relaxed">
+                    {studentProfile.experience}
+                  </p>
+                )}
+
+                <div className="mt-4 pt-3 border-t border-gray-100">
+                  <span className="text-xs text-blue-600 font-medium group-hover:underline">
+                    프로필 보기 →
                   </span>
-                ))}
-                {(studentProfile.interests?.length || 0) > 3 && (
-                  <span className="text-xs text-gray-400">+{studentProfile.interests.length - 3}</span>
-                )}
-              </div>
-
-              {/* SNS 채널 */}
-              <div className="flex flex-wrap gap-1">
-                {studentProfile.available_channels?.instagram && (
-                  <span className="text-xs bg-pink-50 text-pink-500 px-2 py-0.5 rounded-full">인스타그램</span>
-                )}
-                {studentProfile.available_channels?.youtube && (
-                  <span className="text-xs bg-red-50 text-red-500 px-2 py-0.5 rounded-full">유튜브</span>
-                )}
-                {studentProfile.available_channels?.tiktok && (
-                  <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">틱톡</span>
-                )}
-                {studentProfile.available_channels?.naver_blog && (
-                  <span className="text-xs bg-green-50 text-green-500 px-2 py-0.5 rounded-full">네이버 블로그</span>
-                )}
-              </div>
-
-              {/* 경험 요약 */}
-              {studentProfile.experience && (
-                <p className="text-xs text-gray-500 mt-3 line-clamp-2 leading-relaxed">
-                  {studentProfile.experience}
-                </p>
-              )}
-
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <span className="text-xs text-blue-600 font-medium group-hover:underline">
-                  프로필 보기 →
-                </span>
-              </div>
+                </div>
               </div>
             </Link>
           ))}

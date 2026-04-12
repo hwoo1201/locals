@@ -283,13 +283,12 @@ function OwnerProfile({ profile, shop, reviews, avgRating, reviewerNames, matchB
             </div>
           )}
 
-          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-            {shop.budget_range && (
-              <span>
-                월 예산: <strong>{shop.budget_range}</strong>
-              </span>
-            )}
-          </div>
+          {shop.budget_range && (
+            <div className="bg-orange-50 rounded-xl px-4 py-3">
+              <p className="text-xs text-orange-500 font-medium mb-0.5">급여 범위</p>
+              <p className="text-sm font-bold text-orange-900">{shop.budget_range}</p>
+            </div>
+          )}
 
           {shop.goals && (
             <div>
@@ -349,6 +348,30 @@ function StudentProfileView({
 
       {/* 매칭 버튼 */}
       {matchButton && <div>{matchButton}</div>}
+
+      {/* 급여·프로젝트 요약 */}
+      {studentProfile && (
+        <div className="grid grid-cols-3 gap-3">
+          <div className="card text-center py-3 px-2">
+            <p className="text-xs text-gray-400 mb-1">희망 급여</p>
+            <p className="text-sm font-bold text-orange-600">
+              {studentProfile.desired_pay != null ? `${studentProfile.desired_pay}만원` : "협의"}
+            </p>
+          </div>
+          <div className="card text-center py-3 px-2">
+            <p className="text-xs text-gray-400 mb-1">평균 급여</p>
+            <p className="text-sm font-bold text-green-600">
+              {studentProfile.avg_pay != null ? `${studentProfile.avg_pay}만원` : "-"}
+            </p>
+          </div>
+          <div className="card text-center py-3 px-2">
+            <p className="text-xs text-gray-400 mb-1">완료 프로젝트</p>
+            <p className="text-sm font-bold text-blue-600">
+              {studentProfile.completed_projects_count}건
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* 프로필 상세 */}
       {studentProfile ? (
