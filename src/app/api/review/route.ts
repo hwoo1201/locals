@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { checkRateLimit, matchLimiter } from "@/lib/ratelimit";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req: NextRequest) {
   const rateLimitRes = await checkRateLimit(req, matchLimiter);
@@ -54,11 +55,14 @@ export async function POST(req: NextRequest) {
       if (error.code === "23505") {
         return NextResponse.json({ error: "이미 리뷰를 작성했습니다." }, { status: 409 });
       }
+      Sentry.captureException(error, { extra: { context: "review - insert" } });
+      console.error("리뷰 저장 실패:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    Sentry.captureException(err, { extra: { context: "review" } });
     console.error("review 오류:", err);
     return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }

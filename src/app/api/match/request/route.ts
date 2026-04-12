@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { sendMatchRequestEmail } from "@/lib/email";
 import { checkRateLimit, matchLimiter } from "@/lib/ratelimit";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req: NextRequest) {
   const rateLimitRes = await checkRateLimit(req, matchLimiter);
@@ -22,12 +23,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "필수 값이 누락됐습니다." }, { status: 400 });
     }
 
-    // 자기 자신에게 요청 방지
     if (target_id === user.id) {
       return NextResponse.json({ error: "자기 자신에게 요청할 수 없습니다." }, { status: 400 });
     }
 
-    // 중복 pending 요청 확인
     const { data: existing } = await supabase
       .from("match_requests")
       .select("id, status")
@@ -40,7 +39,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "이미 보낸 요청이 있습니다." }, { status: 409 });
     }
 
-    // 매칭 요청 생성
     const { data: matchRequest, error: insertError } = await supabase
       .from("match_requests")
       .insert({
@@ -54,10 +52,13 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (insertError) {
+      Sentry.captureException(insertError, { extra: { context: "match/request - insert" } });
+      console.error("매칭 요청 생성 실패:", insertError);
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
     // 이메일 발송 (실패해도 요청 자체는 성공)
+    let emailWarning: string | undefined;
     try {
       const adminClient = createAdminClient();
       const [
@@ -83,11 +84,18 @@ export async function POST(req: NextRequest) {
         });
       }
     } catch (emailErr) {
+      Sentry.captureException(emailErr, { extra: { context: "match/request - email" } });
       console.error("이메일 발송 실패:", emailErr);
+      emailWarning = "매칭 요청은 완료되었으나 알림 이메일 발송에 실패했습니다.";
     }
 
-    return NextResponse.json({ success: true, match_id: matchRequest.id });
+    return NextResponse.json({
+      success: true,
+      match_id: matchRequest.id,
+      ...(emailWarning && { warning: emailWarning }),
+    });
   } catch (err) {
+    Sentry.captureException(err, { extra: { context: "match/request" } });
     console.error("match/request 오류:", err);
     return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }

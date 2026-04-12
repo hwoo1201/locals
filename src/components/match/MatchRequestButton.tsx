@@ -28,6 +28,7 @@ export default function MatchRequestButton({
   const [modalOpen, setModalOpen] = useState(false);
   const [done, setDone] = useState(false);
   const [status, setStatus] = useState(existingStatus);
+  const [toast, setToast] = useState<string | null>(null);
 
   // 매칭 요청 가능 여부 체크
   // 소상공인 → 대학생: shop_id = 내 shop
@@ -86,10 +87,20 @@ export default function MatchRequestButton({
     setStatus("pending");
     setModalOpen(false);
     router.refresh();
+
+    if (json.warning) {
+      setToast(json.warning);
+      setTimeout(() => setToast(null), 4000);
+    }
   };
 
   return (
     <>
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-yellow-500 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-lg">
+          {toast}
+        </div>
+      )}
       <button
         onClick={() => setModalOpen(true)}
         className="btn-primary w-full text-center"

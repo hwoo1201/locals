@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { checkRateLimit, authLimiter } from "@/lib/ratelimit";
+import * as Sentry from "@sentry/nextjs";
 import type { UserType } from "@/types";
 
 // [Supabase 설정 필요]
@@ -37,7 +38,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: passwordError }, { status: 400 });
     }
 
-    // 1. 일반 signUp — 확인 이메일 자동 발송 + emailRedirectTo로 /auth/confirm 지정
     const anonClient = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -64,7 +64,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "회원가입에 실패했습니다." }, { status: 500 });
     }
 
-    // 2. 프로필 생성 (admin으로 RLS 우회)
     const admin = createAdminClient();
     const { error: profileError } = await admin.from("profiles").insert({
       user_id: user.id,
@@ -75,13 +74,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (profileError) {
-      // 프로필 생성 실패 시 유저 삭제 (롤백)
       await admin.auth.admin.deleteUser(user.id);
+      Sentry.captureException(profileError, { extra: { context: "signup - profile insert" } });
+      console.error("프로필 생성 실패:", profileError);
       return NextResponse.json({ error: "프로필 생성에 실패했습니다: " + profileError.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    Sentry.captureException(err, { extra: { context: "signup" } });
     console.error("signup 오류:", err);
     return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }

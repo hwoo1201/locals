@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { checkRateLimit, generalLimiter } from "@/lib/ratelimit";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(
   _req: NextRequest,
@@ -40,10 +41,15 @@ export async function POST(
       .update({ status: "completed" })
       .eq("id", id);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      Sentry.captureException(error, { extra: { context: "project/complete - update" } });
+      console.error("프로젝트 완료 처리 실패:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    Sentry.captureException(err, { extra: { context: "project/complete" } });
     console.error("complete 오류:", err);
     return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }

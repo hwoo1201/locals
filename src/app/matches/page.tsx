@@ -28,6 +28,7 @@ export default function MatchesPage() {
   const [responding, setResponding] = useState<string | null>(null);
   const [acceptingMatchId, setAcceptingMatchId] = useState<string | null>(null);
   const [selectedWeeks, setSelectedWeeks] = useState<number>(4);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -84,6 +85,7 @@ export default function MatchesPage() {
     });
 
     if (res.ok) {
+      const json = await res.json();
       setReceived((prev) =>
         prev.map((r) =>
           r.id === matchId
@@ -91,6 +93,10 @@ export default function MatchesPage() {
             : r
         )
       );
+      if (json.warning) {
+        setToast(json.warning);
+        setTimeout(() => setToast(null), 4000);
+      }
     }
     setResponding(null);
     setAcceptingMatchId(null);
@@ -101,6 +107,11 @@ export default function MatchesPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-yellow-500 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-lg animate-fade-in">
+          {toast}
+        </div>
+      )}
       <div className="mb-6">
         <h1 className="text-2xl font-black text-gray-900">매칭 관리</h1>
         <p className="text-gray-500 mt-1">보내고 받은 매칭 요청을 확인하세요</p>
