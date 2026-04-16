@@ -102,7 +102,7 @@ export default function ConfirmPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            LOCALS
+            솜씨
           </Link>
         </div>
         <div className="card">

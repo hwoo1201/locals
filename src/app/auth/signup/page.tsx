@@ -96,7 +96,7 @@ function SignupForm() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-              LOCALS
+              솜씨
             </Link>
           </div>
           <div className="card text-center space-y-4">
@@ -129,7 +129,7 @@ function SignupForm() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            LOCALS
+            솜씨
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">회원가입</h1>
           <p className="text-gray-500 mt-1">무료로 시작하세요</p>
@@ -230,7 +230,7 @@ function SignupForm() {
                 <div>
                   <p className="text-sm font-bold text-orange-800 mb-1">수수료 안내</p>
                   <p className="text-xs text-orange-700 leading-relaxed">
-                    LOCALS는 매칭 성사 시 <strong>첫 달 급여의 20%</strong>를 수수료로 <strong>1회만</strong> 받습니다.
+                    솜씨는 매칭 성사 시 <strong>첫 달 급여의 20%</strong>를 수수료로 <strong>1회만</strong> 받습니다.
                   </p>
                   <p className="text-xs text-orange-600 mt-1">이후 추가 비용은 없습니다.</p>
                 </div>

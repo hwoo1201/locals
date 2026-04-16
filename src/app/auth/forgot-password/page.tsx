@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            LOCALS
+            솜씨
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">비밀번호 찾기</h1>
           <p className="text-gray-500 mt-1">가입한 이메일로 재설정 링크를 보내드려요</p>

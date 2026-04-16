@@ -47,7 +47,7 @@ export default function GNB() {
         <div className="flex items-center justify-between h-16">
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-black text-blue-600">LOCALS</span>
+            <span className="text-2xl font-black text-blue-600">솜씨</span>
             <span className="hidden sm:block text-xs text-gray-500 font-medium">소상공인 × 대학생</span>
           </Link>
 

@@ -128,7 +128,7 @@ export default function PrivacyPage() {
             <li>회원 탈퇴 (서비스 내 기능 또는 이메일 요청)</li>
           </ul>
           <p className="mt-3 text-gray-500">
-            권리 행사는 hello@locals.kr로 요청하시면 지체 없이 처리합니다.
+            권리 행사는 hello@somssi.kr로 요청하시면 지체 없이 처리합니다.
           </p>
         </section>
 
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
           <h2 className="font-bold text-gray-900 text-base mb-3">8. 개인정보 보호책임자</h2>
           <div className="bg-gray-50 rounded-xl p-4 space-y-1">
             <p><span className="text-gray-500">책임자:</span> [운영자명]</p>
-            <p><span className="text-gray-500">이메일:</span> hello@locals.kr</p>
+            <p><span className="text-gray-500">이메일:</span> hello@somssi.kr</p>
             <p className="text-xs text-gray-400 mt-2">
               개인정보 침해 신고는 개인정보보호위원회(privacy.go.kr) 또는 한국인터넷진흥원(118)에 문의하실 수 있습니다.
             </p>

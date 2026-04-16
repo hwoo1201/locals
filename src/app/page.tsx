@@ -79,7 +79,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-              왜 LOCALS인가요?
+              왜 솜씨인가요?
             </h2>
             <p className="text-gray-500 text-lg">양쪽 모두에게 이득이 되는 구조</p>
           </div>

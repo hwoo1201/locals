@@ -16,14 +16,14 @@ export default function TermsPage() {
         <section>
           <h2 className="font-bold text-gray-900 text-base mb-3">제1조 (목적)</h2>
           <p>
-            이 약관은 LOCALS(로컬스, 이하 &ldquo;서비스&rdquo;)가 제공하는 소상공인 × 대학생 마케팅 매칭 플랫폼 서비스의 이용 조건 및 절차, 권리·의무 등 기본적인 사항을 규정함을 목적으로 합니다.
+            이 약관은 솜씨(로컬스, 이하 &ldquo;서비스&rdquo;)가 제공하는 소상공인 × 대학생 마케팅 매칭 플랫폼 서비스의 이용 조건 및 절차, 권리·의무 등 기본적인 사항을 규정함을 목적으로 합니다.
           </p>
         </section>
 
         <section>
           <h2 className="font-bold text-gray-900 text-base mb-3">제2조 (정의)</h2>
           <ul className="space-y-2 list-disc list-inside">
-            <li><strong>서비스</strong>: LOCALS가 운영하는 매칭 플랫폼 및 관련 제반 서비스</li>
+            <li><strong>서비스</strong>: 솜씨가 운영하는 매칭 플랫폼 및 관련 제반 서비스</li>
             <li><strong>회원</strong>: 서비스에 가입하여 이용 계약을 체결한 자</li>
             <li><strong>소상공인</strong>: 마케팅 협업을 의뢰하는 매장 운영자</li>
             <li><strong>대학생 마케터</strong>: 마케팅 서비스를 제공하는 대학(원)생</li>
@@ -67,14 +67,14 @@ export default function TermsPage() {
         <section>
           <h2 className="font-bold text-gray-900 text-base mb-3">제7조 (회원 탈퇴)</h2>
           <p>
-            회원은 언제든지 서비스 내 탈퇴 기능 또는 이메일(hello@locals.kr) 요청을 통해 탈퇴할 수 있습니다. 탈퇴 후 개인정보는 개인정보처리방침에 따라 처리됩니다.
+            회원은 언제든지 서비스 내 탈퇴 기능 또는 이메일(hello@somssi.kr) 요청을 통해 탈퇴할 수 있습니다. 탈퇴 후 개인정보는 개인정보처리방침에 따라 처리됩니다.
           </p>
         </section>
 
         <section>
           <h2 className="font-bold text-gray-900 text-base mb-3">제8조 (책임의 한계)</h2>
           <p>
-            LOCALS는 회원 간 매칭 결과, 마케팅 성과, 분쟁 등에 대해 보증하지 않습니다. 서비스는 플랫폼 제공자로서 중개 역할만 수행합니다.
+            솜씨는 회원 간 매칭 결과, 마케팅 성과, 분쟁 등에 대해 보증하지 않습니다. 서비스는 플랫폼 제공자로서 중개 역할만 수행합니다.
           </p>
         </section>
 
@@ -88,7 +88,7 @@ export default function TermsPage() {
         <section className="bg-gray-50 rounded-xl p-4">
           <p className="text-gray-500">
             운영자: [운영자명]<br />
-            문의: hello@locals.kr
+            문의: hello@somssi.kr
           </p>
         </section>
       </div>

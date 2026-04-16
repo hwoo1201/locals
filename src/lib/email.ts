@@ -3,7 +3,7 @@ import { Resend } from "resend";
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || "re_placeholder");
 }
-const FROM = process.env.RESEND_FROM_EMAIL || "noreply@locals.kr";
+const FROM = process.env.RESEND_FROM_EMAIL || "noreply@somssi.kr";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 function escapeHtml(str: string): string {
@@ -36,12 +36,12 @@ export async function sendMatchRequestEmail({
   const safeMessage = message ? escapeHtml(message) : undefined;
 
   await getResend().emails.send({
-    from: `LOCALS <${FROM}>`,
+    from: `솜씨 <${FROM}>`,
     to: toEmail,
-    subject: `[LOCALS] ${fromName}님이 매칭을 요청했습니다`,
+    subject: `[솜씨] ${fromName}님이 매칭을 요청했습니다`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">LOCALS</h1>
+        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">솜씨</h1>
         <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">소상공인 × 대학생 마케팅 매칭</p>
 
         <h2 style="font-size: 20px; color: #111827;">새 매칭 요청이 도착했어요</h2>
@@ -69,7 +69,7 @@ export async function sendMatchRequestEmail({
         </a>
 
         <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-          이 이메일은 LOCALS 플랫폼에서 자동 발송되었습니다.
+          이 이메일은 솜씨 플랫폼에서 자동 발송되었습니다.
         </p>
       </div>
     `,
@@ -99,12 +99,12 @@ export async function sendMatchAcceptedEmail({
   const safeContactMethod = fromContactMethod ? escapeHtml(fromContactMethod) : undefined;
 
   await getResend().emails.send({
-    from: `LOCALS <${FROM}>`,
+    from: `솜씨 <${FROM}>`,
     to: toEmail,
-    subject: `[LOCALS] ${fromName}님이 매칭 요청을 수락했습니다`,
+    subject: `[솜씨] ${fromName}님이 매칭 요청을 수락했습니다`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">LOCALS</h1>
+        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">솜씨</h1>
         <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">소상공인 × 대학생 마케팅 매칭</p>
 
         <h2 style="font-size: 20px; color: #111827;">매칭이 성사됐어요!</h2>
@@ -135,7 +135,7 @@ export async function sendMatchAcceptedEmail({
         </a>
 
         <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-          이 이메일은 LOCALS 플랫폼에서 자동 발송되었습니다.
+          이 이메일은 솜씨 플랫폼에서 자동 발송되었습니다.
         </p>
       </div>
     `,
@@ -157,12 +157,12 @@ export async function sendMatchRejectedEmail({
   const safeFromName = escapeHtml(fromName);
 
   await getResend().emails.send({
-    from: `LOCALS <${FROM}>`,
+    from: `솜씨 <${FROM}>`,
     to: toEmail,
-    subject: `[LOCALS] ${shopName} 매칭 요청 결과 안내`,
+    subject: `[솜씨] ${shopName} 매칭 요청 결과 안내`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">LOCALS</h1>
+        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">솜씨</h1>
         <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">소상공인 × 대학생 마케팅 매칭</p>
 
         <h2 style="font-size: 20px; color: #111827;">매칭 요청 결과</h2>
@@ -178,7 +178,7 @@ export async function sendMatchRejectedEmail({
         </a>
 
         <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-          이 이메일은 LOCALS 플랫폼에서 자동 발송되었습니다.
+          이 이메일은 솜씨 플랫폼에서 자동 발송되었습니다.
         </p>
       </div>
     `,
