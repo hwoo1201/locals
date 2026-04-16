@@ -22,7 +22,7 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-3">문의</h4>
             <ul className="space-y-2 text-sm">
-              <li>이메일: hello@somssi.kr</li>
+              <li>이메일: hello@somsi.kr</li>
               <li>운영시간: 평일 10:00 - 18:00</li>
             </ul>
           </div>

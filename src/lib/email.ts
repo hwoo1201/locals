@@ -3,7 +3,7 @@ import { Resend } from "resend";
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || "re_placeholder");
 }
-const FROM = process.env.RESEND_FROM_EMAIL || "noreply@somssi.kr";
+const FROM = process.env.RESEND_FROM_EMAIL || "noreply@somsi.kr";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 function escapeHtml(str: string): string {

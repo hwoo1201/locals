@@ -67,7 +67,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-bold text-gray-900 text-base mb-3">제7조 (회원 탈퇴)</h2>
           <p>
-            회원은 언제든지 서비스 내 탈퇴 기능 또는 이메일(hello@somssi.kr) 요청을 통해 탈퇴할 수 있습니다. 탈퇴 후 개인정보는 개인정보처리방침에 따라 처리됩니다.
+            회원은 언제든지 서비스 내 탈퇴 기능 또는 이메일(hello@somsi.kr) 요청을 통해 탈퇴할 수 있습니다. 탈퇴 후 개인정보는 개인정보처리방침에 따라 처리됩니다.
           </p>
         </section>
 
@@ -88,7 +88,7 @@ export default function TermsPage() {
         <section className="bg-gray-50 rounded-xl p-4">
           <p className="text-gray-500">
             운영자: [운영자명]<br />
-            문의: hello@somssi.kr
+            문의: hello@somsi.kr
           </p>
         </section>
       </div>
