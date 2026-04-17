@@ -1,18 +1,5 @@
 import Link from "next/link";
-
-function LogoMark({ size = 40 }: { size?: number }) {
-  const gap = size * 0.1;
-  const sq = (size - gap * 3) / 2;
-  const r = sq * 0.3;
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none">
-      <rect x={gap} y={gap} width={sq} height={sq} rx={r} fill="#6366F1" />
-      <rect x={gap * 2 + sq} y={gap} width={sq} height={sq} rx={r} fill="#6366F1" opacity="0.5" />
-      <rect x={gap} y={gap * 2 + sq} width={sq} height={sq} rx={r} fill="#6366F1" opacity="0.5" />
-      <rect x={gap * 2 + sq} y={gap * 2 + sq} width={sq} height={sq} rx={r} fill="#F97316" />
-    </svg>
-  );
-}
+import LogoMark from "@/components/ui/LogoMark";
 
 const features = [
   {
@@ -134,12 +121,7 @@ export default function Home() {
             {/* 소상공인 */}
             <div className="bg-white rounded-3xl p-8 border border-indigo-100 shadow-sm">
               <div className="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center mb-5">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <rect x="1" y="1" width="9" height="9" rx="2.5" fill="white" />
-                  <rect x="12" y="1" width="9" height="9" rx="2.5" fill="white" opacity="0.6" />
-                  <rect x="1" y="12" width="9" height="9" rx="2.5" fill="white" opacity="0.6" />
-                  <rect x="12" y="12" width="9" height="9" rx="2.5" fill="white" opacity="0.3" />
-                </svg>
+                <LogoMark size={22} color="white" />
               </div>
               <h3 className="text-2xl font-black text-gray-900 mb-1">소상공인</h3>
               <p className="text-indigo-500 text-sm font-medium mb-5">비용 걱정 없이 마케팅을</p>
@@ -167,12 +149,7 @@ export default function Home() {
             {/* 대학생 */}
             <div className="bg-white rounded-3xl p-8 border border-orange-100 shadow-sm">
               <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center mb-5">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <rect x="1" y="1" width="9" height="9" rx="2.5" fill="white" opacity="0.6" />
-                  <rect x="12" y="1" width="9" height="9" rx="2.5" fill="white" />
-                  <rect x="1" y="12" width="9" height="9" rx="2.5" fill="white" opacity="0.3" />
-                  <rect x="12" y="12" width="9" height="9" rx="2.5" fill="white" opacity="0.6" />
-                </svg>
+                <LogoMark size={22} color="white" />
               </div>
               <h3 className="text-2xl font-black text-gray-900 mb-1">대학생</h3>
               <p className="text-orange-500 text-sm font-medium mb-5">경험과 수익을 동시에</p>

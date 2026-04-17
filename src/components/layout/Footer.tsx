@@ -1,15 +1,5 @@
 import Link from "next/link";
-
-function LogoMark() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-      <rect x="1" y="1" width="11" height="11" rx="3" fill="#6366F1" opacity="0.8" />
-      <rect x="16" y="1" width="11" height="11" rx="3" fill="#6366F1" opacity="0.4" />
-      <rect x="1" y="16" width="11" height="11" rx="3" fill="#6366F1" opacity="0.4" />
-      <rect x="16" y="16" width="11" height="11" rx="3" fill="#F97316" opacity="0.8" />
-    </svg>
-  );
-}
+import LogoMark from "@/components/ui/LogoMark";
 
 export default function Footer() {
   return (
@@ -18,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <LogoMark />
+              <LogoMark size={24} color="#6366F1" />
               <h3 className="text-white font-black text-lg tracking-tight">솜씨</h3>
             </div>
             <p className="text-sm leading-relaxed text-gray-500">

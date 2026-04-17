@@ -5,17 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Profile } from "@/types";
-
-function LogoMark() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <rect x="1" y="1" width="11" height="11" rx="3" fill="#6366F1" />
-      <rect x="16" y="1" width="11" height="11" rx="3" fill="#6366F1" opacity="0.5" />
-      <rect x="1" y="16" width="11" height="11" rx="3" fill="#6366F1" opacity="0.5" />
-      <rect x="16" y="16" width="11" height="11" rx="3" fill="#F97316" />
-    </svg>
-  );
-}
+import LogoMark from "@/components/ui/LogoMark";
 
 export default function GNB() {
   const router = useRouter();
@@ -58,7 +48,7 @@ export default function GNB() {
         <div className="flex items-center justify-between h-16">
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-2.5">
-            <LogoMark />
+            <LogoMark size={28} />
             <span className="text-xl font-black text-gray-900 tracking-tight">솜씨</span>
             <span className="hidden sm:block text-xs text-gray-400 font-medium">소상공인 × 대학생</span>
           </Link>
