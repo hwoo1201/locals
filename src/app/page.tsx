@@ -33,7 +33,9 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-8">
-            <LogoMark size={72} />
+            <div className="w-20 h-20 bg-[#1A1A1A] rounded-3xl flex items-center justify-center">
+              <LogoMark size={48} color="white" />
+            </div>
           </div>
 
           <div className="inline-flex items-center gap-2 bg-white border border-[#F0D5C2] text-[#888888] text-sm font-medium px-4 py-2 rounded-full mb-7">
@@ -97,8 +99,8 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-5">
             {features.map((f) => (
               <div key={f.title} className="card hover:shadow-md transition-all hover:-translate-y-1">
-                <div className="mb-4">
-                  <LogoMark size={32} color="#EFEFEF" />
+                <div className="w-10 h-10 bg-[#1A1A1A] rounded-2xl flex items-center justify-center mb-4">
+                  <LogoMark size={22} color="white" />
                 </div>
                 <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{f.title}</h3>
                 <p className="text-[#888888] text-sm leading-relaxed">{f.desc}</p>
@@ -200,7 +202,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#F07348]/10 rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-6">
-            <LogoMark size={52} color="#EFEFEF" />
+            <LogoMark size={52} color="white" />
           </div>
           <h2 className="text-3xl md:text-4xl font-black mb-4">지금 바로 시작하세요</h2>
           <p className="text-[#888888] mb-10 text-lg">
