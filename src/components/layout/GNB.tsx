@@ -43,7 +43,7 @@ export default function GNB() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#EDE9E4]">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* 로고 */}
@@ -59,27 +59,27 @@ export default function GNB() {
               <>
                 <Link
                   href={profile.user_type === "owner" ? "/dashboard/owner" : "/dashboard/student"}
-                  className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                  className="text-sm font-medium text-gray-600 hover:text-[#1A1A1A] transition-colors"
                 >
                   대시보드
                 </Link>
                 {profile.user_type === "owner" && (
-                  <Link href="/explore/students" className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+                  <Link href="/explore/students" className="text-sm font-medium text-gray-600 hover:text-[#1A1A1A] transition-colors">
                     대학생 탐색
                   </Link>
                 )}
                 {profile.user_type === "student" && (
-                  <Link href="/explore/shops" className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+                  <Link href="/explore/shops" className="text-sm font-medium text-gray-600 hover:text-[#1A1A1A] transition-colors">
                     매장 탐색
                   </Link>
                 )}
-                <Link href="/matches" className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+                <Link href="/matches" className="text-sm font-medium text-gray-600 hover:text-[#1A1A1A] transition-colors">
                   매칭
                 </Link>
-                <Link href="/mypage" className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+                <Link href="/mypage" className="text-sm font-medium text-gray-600 hover:text-[#1A1A1A] transition-colors">
                   마이페이지
                 </Link>
-                <Link href={`/profile/${profile.user_id}`} className="text-sm font-semibold text-indigo-500 hover:text-indigo-600 transition-colors">
+                <Link href={`/profile/${profile.user_id}`} className="text-sm font-semibold text-[#888888] hover:text-[#1A1A1A] transition-colors">
                   {profile.name}
                 </Link>
                 <button
@@ -91,12 +91,12 @@ export default function GNB() {
               </>
             ) : (
               <>
-                <Link href="/auth/login" className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+                <Link href="/auth/login" className="text-sm font-medium text-gray-600 hover:text-[#1A1A1A] transition-colors">
                   로그인
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className="text-sm font-semibold bg-indigo-500 text-white px-4 py-2 rounded-xl hover:bg-indigo-600 transition-colors"
+                  className="text-sm font-semibold bg-[#222222] text-white px-4 py-2 rounded-xl hover:bg-[#3a3a3a] transition-colors"
                 >
                   무료 시작하기
                 </Link>
@@ -144,7 +144,7 @@ export default function GNB() {
                 <Link href="/mypage" className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl" onClick={() => setMenuOpen(false)}>
                   마이페이지
                 </Link>
-                <Link href={`/profile/${profile.user_id}`} className="block px-3 py-2 text-sm font-medium text-indigo-500 hover:bg-indigo-50 rounded-xl" onClick={() => setMenuOpen(false)}>
+                <Link href={`/profile/${profile.user_id}`} className="block px-3 py-2 text-sm font-medium text-[#888888] hover:bg-[#F8F6F3] rounded-xl" onClick={() => setMenuOpen(false)}>
                   내 공개 프로필
                 </Link>
                 <button
@@ -159,7 +159,7 @@ export default function GNB() {
                 <Link href="/auth/login" className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl" onClick={() => setMenuOpen(false)}>
                   로그인
                 </Link>
-                <Link href="/auth/signup" className="block px-3 py-2 text-sm font-semibold text-indigo-500 hover:bg-indigo-50 rounded-xl" onClick={() => setMenuOpen(false)}>
+                <Link href="/auth/signup" className="block px-3 py-2 text-sm font-semibold text-[#888888] hover:bg-[#F8F6F3] rounded-xl" onClick={() => setMenuOpen(false)}>
                   무료 시작하기
                 </Link>
               </>

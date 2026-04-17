@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <LogoMark size={24} color="#6366F1" />
+              <LogoMark size={24} color="#888888" />
               <h3 className="text-white font-black text-lg tracking-tight">솜씨</h3>
             </div>
             <p className="text-sm leading-relaxed text-gray-500">
