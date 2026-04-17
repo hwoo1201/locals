@@ -42,7 +42,7 @@ export default function Home() {
 
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight text-[#1A1A1A]">
             로컬 비즈니스를<br />
-            <span className="text-[#BEBEBE]">대학생 마케터</span>와 함께
+            <span className="text-[#F07348]">대학생 마케터</span>와 함께
           </h1>
 
           <p className="text-lg md:text-xl text-[#888888] mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -98,7 +98,7 @@ export default function Home() {
             {features.map((f) => (
               <div key={f.title} className="card hover:shadow-md transition-all hover:-translate-y-1">
                 <div className="mb-4">
-                  <LogoMark size={32} color="#BEBEBE" />
+                  <LogoMark size={32} color="#EFEFEF" />
                 </div>
                 <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{f.title}</h3>
                 <p className="text-[#888888] text-sm leading-relaxed">{f.desc}</p>
@@ -130,7 +130,7 @@ export default function Home() {
                   "카페, 음식점, 소매, 뷰티 등 모든 업종",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-[#555555]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#BEBEBE] mt-1.5 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#CCCCCC] mt-1.5 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -200,7 +200,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#F07348]/10 rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-6">
-            <LogoMark size={52} color="#BEBEBE" />
+            <LogoMark size={52} color="#EFEFEF" />
           </div>
           <h2 className="text-3xl md:text-4xl font-black mb-4">지금 바로 시작하세요</h2>
           <p className="text-[#888888] mb-10 text-lg">
