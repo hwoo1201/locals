@@ -27,16 +27,16 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* 히어로 섹션 */}
-      <section className="bg-[#F8F6F3] py-28 px-4 relative overflow-hidden">
-        <div className="absolute top-[-80px] right-[-80px] w-[420px] h-[420px] rounded-full bg-[#EDE9E4] opacity-60 pointer-events-none" />
-        <div className="absolute bottom-[-60px] left-[-60px] w-[280px] h-[280px] rounded-full bg-[#F2EDE7] opacity-50 pointer-events-none" />
+      <section className="bg-[#FEF7EE] py-28 px-4 relative overflow-hidden">
+        <div className="absolute top-[-80px] right-[-80px] w-[420px] h-[420px] rounded-full bg-[#FAE5D3] opacity-60 pointer-events-none" />
+        <div className="absolute bottom-[-60px] left-[-60px] w-[280px] h-[280px] rounded-full bg-[#FBE5D5] opacity-50 pointer-events-none" />
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-8">
             <LogoMark size={72} />
           </div>
 
-          <div className="inline-flex items-center gap-2 bg-white border border-[#E0DBD5] text-[#888888] text-sm font-medium px-4 py-2 rounded-full mb-7">
+          <div className="inline-flex items-center gap-2 bg-white border border-[#F0D5C2] text-[#888888] text-sm font-medium px-4 py-2 rounded-full mb-7">
             <span>소상공인 × 마케팅 대학생 연결 플랫폼</span>
           </div>
 
@@ -59,7 +59,7 @@ export default function Home() {
             </Link>
             <Link
               href="/auth/signup?type=student"
-              className="bg-white hover:bg-[#F2EDE7] text-[#222222] font-bold px-8 py-4 rounded-2xl text-lg transition-colors border border-[#D8D4CF]"
+              className="bg-white hover:bg-[#FBE5D5] text-[#222222] font-bold px-8 py-4 rounded-2xl text-lg transition-colors border border-[#EDCDB8]"
             >
               대학생으로 시작하기
             </Link>
@@ -68,7 +68,7 @@ export default function Home() {
       </section>
 
       {/* 수치 섹션 */}
-      <section className="bg-white py-12 border-y border-[#EDE9E4]">
+      <section className="bg-white py-12 border-y border-[#FAE5D3]">
         <div className="max-w-4xl mx-auto px-4">
           <div className="grid grid-cols-3 gap-6 text-center">
             {[
@@ -86,7 +86,7 @@ export default function Home() {
       </section>
 
       {/* 특징 섹션 */}
-      <section className="py-24 px-4 bg-[#F8F6F3]">
+      <section className="py-24 px-4 bg-[#FEF7EE]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-3">
@@ -116,7 +116,7 @@ export default function Home() {
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {/* 소상공인 */}
-            <div className="rounded-3xl p-8 border border-[#EDE9E4] bg-[#F8F6F3]">
+            <div className="rounded-3xl p-8 border border-[#FAE5D3] bg-[#FEF7EE]">
               <div className="w-12 h-12 bg-[#222222] rounded-2xl flex items-center justify-center mb-5">
                 <LogoMark size={24} color="white" />
               </div>
@@ -175,7 +175,7 @@ export default function Home() {
       </section>
 
       {/* 진행 단계 */}
-      <section className="py-24 px-4 bg-[#F8F6F3]">
+      <section className="py-24 px-4 bg-[#FEF7EE]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-black text-center text-[#1A1A1A] mb-14">
             어떻게 진행되나요?
@@ -183,7 +183,7 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
             {steps.map((s) => (
               <div key={s.step} className="text-center group">
-                <div className="w-14 h-14 bg-white border border-[#EDE9E4] group-hover:bg-[#222222] group-hover:border-[#222222] text-[#BEBEBE] group-hover:text-white rounded-2xl flex items-center justify-center font-black text-base mx-auto mb-4 transition-all">
+                <div className="w-14 h-14 bg-white border border-[#FAE5D3] group-hover:bg-[#222222] group-hover:border-[#222222] text-[#BEBEBE] group-hover:text-white rounded-2xl flex items-center justify-center font-black text-base mx-auto mb-4 transition-all">
                   {s.step}
                 </div>
                 <h3 className="font-bold text-[#1A1A1A] mb-1 text-sm">{s.title}</h3>
@@ -209,7 +209,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth/signup?type=owner"
-              className="bg-white hover:bg-[#F8F6F3] text-[#1A1A1A] font-bold px-8 py-4 rounded-2xl transition-colors"
+              className="bg-white hover:bg-[#FEF7EE] text-[#1A1A1A] font-bold px-8 py-4 rounded-2xl transition-colors"
             >
               소상공인으로 시작
             </Link>
