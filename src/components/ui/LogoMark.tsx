@@ -1,7 +1,4 @@
 export default function LogoMark({ size = 40, color = "#6366F1" }: { size?: number; color?: string }) {
-  const r = size * 0.3;
-  const c = size / 2;
-  const offset = size * 0.155;
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="13" cy="13" r="11" fill={color} />
