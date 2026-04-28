@@ -4,7 +4,6 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { AuthResponse } from "@supabase/supabase-js";
 import { BRAND } from "@/lib/brand";
 import LogoMark from "@/components/ui/LogoMark";
 
@@ -20,12 +19,13 @@ function VerifyEmailContent() {
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
   useEffect(() => {
-    // 이미 인증된 세션이면 마이페이지로 리다이렉트
-    supabase.auth.getSession().then((result: AuthResponse) => {
-      if (result.data.session?.user?.email_confirmed_at) {
+    const check = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.user?.email_confirmed_at) {
         router.replace("/mypage");
       }
-    });
+    };
+    void check();
   }, [router]);
 
   useEffect(() => {
@@ -42,10 +42,15 @@ function VerifyEmailContent() {
   const handleResend = async () => {
     if (!email || cooldown > 0) return;
     setResendLoading(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email });
+    const res = await fetch("/api/auth/resend-verification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
     setResendLoading(false);
-    if (error) {
-      showToast("error", error.message || "재발송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      showToast("error", json.error || "재발송에 실패했습니다. 잠시 후 다시 시도해주세요.");
     } else {
       showToast("success", "인증 메일을 다시 보냈어요.");
       setCooldown(COOLDOWN_SECONDS);

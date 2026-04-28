@@ -29,6 +29,52 @@ const emailFooter = `
   </p>
 `;
 
+export async function sendVerificationEmail({
+  toEmail,
+  tokenHash,
+  type = "signup",
+}: {
+  toEmail: string;
+  tokenHash: string;
+  type?: "signup" | "magiclink";
+}) {
+  const verifyUrl = `${SITE_URL}/auth/confirm?token_hash=${encodeURIComponent(tokenHash)}&type=${type}`;
+
+  await getResend().emails.send({
+    from: FROM,
+    replyTo: REPLY_TO,
+    to: toEmail,
+    subject: `${BRAND.NAME_KO} 이메일 인증을 완료해주세요`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+        ${emailHeader}
+
+        <h2 style="font-size: 20px; color: #111827;">이메일 인증을 완료해주세요</h2>
+        <p style="color: #374151; line-height: 1.6;">
+          ${BRAND.NAME_KO}에 가입해 주셔서 감사합니다!<br/>
+          아래 버튼을 클릭해 이메일 인증을 완료해주세요.
+        </p>
+
+        <a href="${verifyUrl}"
+           style="display: inline-block; background: #2C3E50; color: white; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 15px; margin: 20px 0;">
+          이메일 인증하기
+        </a>
+
+        <p style="color: #6b7280; font-size: 13px; margin-top: 16px;">
+          버튼이 작동하지 않으면 아래 링크를 복사해 브라우저에 붙여넣으세요:<br/>
+          <a href="${verifyUrl}" style="color: #4A7C59; word-break: break-all;">${verifyUrl}</a>
+        </p>
+
+        <p style="color: #9ca3af; font-size: 12px; margin-top: 20px;">
+          이 링크는 24시간 후 만료됩니다. 본인이 요청하지 않았다면 이 메일을 무시하세요.
+        </p>
+
+        ${emailFooter}
+      </div>
+    `,
+  });
+}
+
 export async function sendMatchRequestEmail({
   toEmail,
   toName,

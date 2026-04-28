@@ -36,7 +36,7 @@ function ConfirmContent() {
       }
 
       // token_hash 방식 처리
-      const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" });
+      const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" | "magiclink" });
       if (error) {
         setStatus("error");
         setErrorMessage("인증에 실패했습니다. 링크가 만료되었거나 이미 사용된 링크입니다.");
