@@ -1,4 +1,5 @@
 "use client";
+import { BRAND_NAME } from "@/lib/brand";
 
 // [Supabase 설정 필요]
 // Authentication > URL Configuration > Redirect URLs에 아래 URL 추가:
@@ -40,8 +41,8 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            솜씨
+          <Link href="/" className="inline-block text-3xl font-black text-[#2C3E50] mb-2">
+            {BRAND_NAME}
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">비밀번호 찾기</h1>
           <p className="text-gray-500 mt-1">가입한 이메일로 재설정 링크를 보내드려요</p>

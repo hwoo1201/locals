@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LogoMark from "@/components/ui/LogoMark";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 
 export default function Footer() {
   return (
@@ -9,11 +10,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <LogoMark size={24} color="#E8EDE6" />
-              <h3 className="text-[#E8EDE6] font-black text-lg tracking-tight">솜씨</h3>
+              <h3 className="text-[#E8EDE6] font-black text-lg tracking-tight">{BRAND_NAME}</h3>
             </div>
-            <p className="text-sm leading-relaxed">
-              소상공인과 마케팅 대학생을<br />연결하는 매칭 플랫폼
-            </p>
+            <p className="text-sm leading-relaxed">{BRAND_TAGLINE}</p>
           </div>
           <div>
             <h4 className="text-[#9B9B8E] font-semibold mb-3 text-sm">서비스</h4>
@@ -32,7 +31,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-[#2C2C24] pt-6 flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-[#4A4A3E]">
-          <p>© 2026 솜씨. All rights reserved.</p>
+          <p>© 2026 {BRAND_NAME}. All rights reserved.</p>
           <div className="flex gap-4">
             <Link href="/terms" className="hover:text-[#6B6B5E] transition-colors">이용약관</Link>
             <Link href="/privacy" className="hover:text-[#6B6B5E] transition-colors">개인정보처리방침</Link>

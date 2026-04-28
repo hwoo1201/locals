@@ -1,4 +1,5 @@
 "use client";
+import { BRAND_NAME } from "@/lib/brand";
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
@@ -147,8 +148,8 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            솜씨
+          <Link href="/" className="inline-block text-3xl font-black text-[#2C3E50] mb-2">
+            {BRAND_NAME}
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">새 비밀번호 설정</h1>
           <p className="text-gray-500 mt-1">새로운 비밀번호를 입력해주세요</p>

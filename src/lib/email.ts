@@ -1,9 +1,10 @@
 import { Resend } from "resend";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || "re_placeholder");
 }
-const FROM = process.env.RESEND_FROM_EMAIL || "noreply@somsi.kr";
+const FROM = process.env.RESEND_FROM_EMAIL || "noreply@matchr.kr";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 function escapeHtml(str: string): string {
@@ -14,6 +15,17 @@ function escapeHtml(str: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+const emailHeader = `
+  <h1 style="color: #2C3E50; font-size: 24px; margin-bottom: 4px;">${BRAND_NAME}</h1>
+  <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">${BRAND_TAGLINE}</p>
+`;
+
+const emailFooter = `
+  <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
+    이 이메일은 ${BRAND_NAME} 플랫폼에서 자동 발송되었습니다.
+  </p>
+`;
 
 export async function sendMatchRequestEmail({
   toEmail,
@@ -36,13 +48,12 @@ export async function sendMatchRequestEmail({
   const safeMessage = message ? escapeHtml(message) : undefined;
 
   await getResend().emails.send({
-    from: `솜씨 <${FROM}>`,
+    from: `${BRAND_NAME} <${FROM}>`,
     to: toEmail,
-    subject: `[솜씨] ${fromName}님이 매칭을 요청했습니다`,
+    subject: `[${BRAND_NAME}] ${fromName}님이 매칭을 요청했습니다`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">솜씨</h1>
-        <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">소상공인 × 대학생 마케팅 매칭</p>
+        ${emailHeader}
 
         <h2 style="font-size: 20px; color: #111827;">새 매칭 요청이 도착했어요</h2>
         <p style="color: #374151; line-height: 1.6;">
@@ -58,19 +69,17 @@ export async function sendMatchRequestEmail({
         ` : ""}
 
         ${safeMessage ? `
-        <div style="background: #f9fafb; border-left: 4px solid #2563eb; padding: 16px; border-radius: 4px; margin: 20px 0;">
+        <div style="background: #f9fafb; border-left: 4px solid #2C3E50; padding: 16px; border-radius: 4px; margin: 20px 0;">
           <p style="color: #374151; margin: 0; font-style: italic;">"${safeMessage}"</p>
         </div>
         ` : ""}
 
         <a href="${SITE_URL}/matches"
-           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
+           style="display: inline-block; background: #2C3E50; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
           요청 확인하기 →
         </a>
 
-        <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-          이 이메일은 솜씨 플랫폼에서 자동 발송되었습니다.
-        </p>
+        ${emailFooter}
       </div>
     `,
   });
@@ -99,13 +108,12 @@ export async function sendMatchAcceptedEmail({
   const safeContactMethod = fromContactMethod ? escapeHtml(fromContactMethod) : undefined;
 
   await getResend().emails.send({
-    from: `솜씨 <${FROM}>`,
+    from: `${BRAND_NAME} <${FROM}>`,
     to: toEmail,
-    subject: `[솜씨] ${fromName}님이 매칭 요청을 수락했습니다`,
+    subject: `[${BRAND_NAME}] ${fromName}님이 매칭 요청을 수락했습니다`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">솜씨</h1>
-        <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">소상공인 × 대학생 마케팅 매칭</p>
+        ${emailHeader}
 
         <h2 style="font-size: 20px; color: #111827;">매칭이 성사됐어요!</h2>
         <p style="color: #374151; line-height: 1.6;">
@@ -130,13 +138,11 @@ export async function sendMatchAcceptedEmail({
         ` : ""}
 
         <a href="${SITE_URL}/project/${projectId}"
-           style="display: inline-block; background: #f97316; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
+           style="display: inline-block; background: #4A7C59; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
           프로젝트 확인하기 →
         </a>
 
-        <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-          이 이메일은 솜씨 플랫폼에서 자동 발송되었습니다.
-        </p>
+        ${emailFooter}
       </div>
     `,
   });
@@ -157,13 +163,12 @@ export async function sendMatchRejectedEmail({
   const safeFromName = escapeHtml(fromName);
 
   await getResend().emails.send({
-    from: `솜씨 <${FROM}>`,
+    from: `${BRAND_NAME} <${FROM}>`,
     to: toEmail,
-    subject: `[솜씨] ${shopName} 매칭 요청 결과 안내`,
+    subject: `[${BRAND_NAME}] ${shopName} 매칭 요청 결과 안내`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h1 style="color: #2563eb; font-size: 24px; margin-bottom: 4px;">솜씨</h1>
-        <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">소상공인 × 대학생 마케팅 매칭</p>
+        ${emailHeader}
 
         <h2 style="font-size: 20px; color: #111827;">매칭 요청 결과</h2>
         <p style="color: #374151; line-height: 1.6;">
@@ -173,13 +178,11 @@ export async function sendMatchRejectedEmail({
         </p>
 
         <a href="${SITE_URL}/explore/students"
-           style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
+           style="display: inline-block; background: #2C3E50; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
           다른 파트너 찾기 →
         </a>
 
-        <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-          이 이메일은 솜씨 플랫폼에서 자동 발송되었습니다.
-        </p>
+        ${emailFooter}
       </div>
     `,
   });

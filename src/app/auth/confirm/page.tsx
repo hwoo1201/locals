@@ -1,4 +1,5 @@
 "use client";
+import { BRAND_NAME } from "@/lib/brand";
 
 // Supabase 이메일 인증 링크 클릭 후 도착하는 콜백 페이지
 // Supabase > Authentication > URL Configuration > Redirect URLs에 추가 필요:
@@ -101,8 +102,8 @@ export default function ConfirmPage() {
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            솜씨
+          <Link href="/" className="inline-block text-3xl font-black text-[#2C3E50] mb-2">
+            {BRAND_NAME}
           </Link>
         </div>
         <div className="card">

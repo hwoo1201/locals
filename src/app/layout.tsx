@@ -3,16 +3,17 @@ import "./globals.css";
 import GNB from "@/components/layout/GNB";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
+import { BRAND_NAME, BRAND_TAGLINE, BRAND_DESCRIPTION } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: {
-    default: "솜씨 - 소상공인 × 대학생 마케팅 매칭",
-    template: "%s | 솜씨",
+    default: `${BRAND_NAME} - ${BRAND_TAGLINE}`,
+    template: `%s | ${BRAND_NAME}`,
   },
-  description: "소상공인과 마케팅 대학생을 연결하는 매칭 플랫폼. 소상공인은 무료로 SNS 마케팅을, 대학생은 실전 포트폴리오를 얻습니다.",
+  description: BRAND_DESCRIPTION,
   openGraph: {
-    title: "솜씨 - 소상공인 × 대학생 마케팅 매칭",
-    description: "소상공인과 마케팅 대학생을 연결하는 매칭 플랫폼.",
+    title: `${BRAND_NAME} - ${BRAND_TAGLINE}`,
+    description: BRAND_DESCRIPTION,
     type: "website",
     locale: "ko_KR",
   },

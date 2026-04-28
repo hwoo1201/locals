@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LogoMark from "@/components/ui/LogoMark";
+import { BRAND_NAME } from "@/lib/brand";
 
 const features = [
   {
@@ -39,12 +40,12 @@ export default function Home() {
           </div>
 
           <div className="inline-flex items-center gap-2 bg-white/60 border border-[#D6A77A]/50 text-[#2C3E50] text-sm font-medium px-4 py-2 rounded-full mb-7">
-            <span>소상공인 × 대학생 마케터 매칭 플랫폼</span>
+            <span>소상공인 × 마케팅 대학생 연결 플랫폼</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight text-[#1A1A14]">
-            소상공인과<br />
-            <span className="text-[#4A7C59]">대학생 마케터</span>를 잇다
+            로컬 비즈니스를<br />
+            <span className="text-[#4A7C59]">대학생 마케터</span>와 함께
           </h1>
 
           <p className="text-lg md:text-xl text-[#5A5A4E] mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -91,7 +92,7 @@ export default function Home() {
       <section className="py-24 px-4 bg-[#F0E2B0]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A14] mb-3">왜 솜씨인가요?</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A14] mb-3">왜 {BRAND_NAME}인가요?</h2>
             <p className="text-[#8A8A7E] text-lg">양쪽 모두에게 이득이 되는 구조</p>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
