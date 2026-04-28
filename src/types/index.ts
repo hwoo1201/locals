@@ -1,5 +1,27 @@
 export type UserType = "owner" | "student";
 
+export type MarketerType =
+  | "student"
+  | "instagram_content_creator"
+  | "freelancer_junior"
+  | "sidejob"
+  | "other";
+
+export type FollowerRange =
+  | "under_1k"
+  | "1k_to_5k"
+  | "5k_to_10k"
+  | "10k_to_50k"
+  | "50k_to_100k"
+  | "over_100k";
+
+export type ContentFormat =
+  | "card_news"
+  | "reels"
+  | "info_post"
+  | "curation"
+  | "other";
+
 export interface Profile {
   id: string;
   user_id: string;
@@ -16,10 +38,12 @@ export interface Profile {
 
 export type ShopCategory = "카페" | "음식점" | "소매" | "뷰티" | "기타";
 export type BudgetRange =
-  | "10만 원 미만"
-  | "10~20만 원"
-  | "20~30만 원"
-  | "30만 원 이상";
+  | "free_or_negotiable"
+  | "under_100k"
+  | "100k_to_300k"
+  | "300k_to_500k"
+  | "500k_to_1m"
+  | "over_1m";
 
 export interface SnsAccounts {
   instagram?: string;
@@ -68,6 +92,7 @@ export interface PortfolioImage {
 export interface StudentProfile {
   id: string;
   user_id: string;
+  marketer_type: MarketerType;
   interests: StudentInterest[];
   available_channels: AvailableChannels;
   experience?: string;
@@ -75,9 +100,14 @@ export interface StudentProfile {
   portfolio_images: PortfolioImage[];
   preferred_categories: ShopCategory[];
   available_regions: string[];
-  desired_pay?: number | null;           // 희망 월 급여 (만원)
-  completed_projects_count: number;       // 완료 프로젝트 수
-  avg_pay?: number | null;               // 지금까지 받은 평균 급여 (만원)
+  desired_pay?: number | null;
+  completed_projects_count: number;
+  avg_pay?: number | null;
+  // 인스타 정보계정 전용 필드 (marketer_type === 'instagram_content_creator' 일 때 사용)
+  instagram_handle?: string | null;
+  page_topic?: string | null;
+  follower_range?: FollowerRange | null;
+  content_format?: ContentFormat[] | null;
   created_at: string;
   updated_at: string;
 }

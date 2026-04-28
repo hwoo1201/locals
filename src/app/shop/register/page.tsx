@@ -6,11 +6,13 @@ import { supabase } from "@/lib/supabase";
 import type { ShopCategory, BudgetRange, SnsAccounts } from "@/types";
 
 const CATEGORIES: ShopCategory[] = ["카페", "음식점", "소매", "뷰티", "기타"];
-const BUDGET_RANGES: BudgetRange[] = [
-  "10만 원 미만",
-  "10~20만 원",
-  "20~30만 원",
-  "30만 원 이상",
+const BUDGET_RANGES: { value: BudgetRange; label: string }[] = [
+  { value: "free_or_negotiable", label: "무료/협의" },
+  { value: "under_100k",        label: "10만원 이하" },
+  { value: "100k_to_300k",      label: "10~30만원" },
+  { value: "300k_to_500k",      label: "30~50만원" },
+  { value: "500k_to_1m",        label: "50~100만원" },
+  { value: "over_1m",           label: "100만원 이상" },
 ];
 
 export default function ShopRegisterPage() {
@@ -29,7 +31,7 @@ export default function ShopRegisterPage() {
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [sns, setSns] = useState<SnsAccounts>({});
   const [marketingNeeds, setMarketingNeeds] = useState("");
-  const [budgetRange, setBudgetRange] = useState<BudgetRange>("10~20만 원");
+  const [budgetRange, setBudgetRange] = useState<BudgetRange>("100k_to_300k");
   const [goals, setGoals] = useState("");
   const [contactMethod, setContactMethod] = useState("");
 
@@ -69,7 +71,7 @@ export default function ShopRegisterPage() {
         setPhotoUrls(shop.photos || []);
         setSns(shop.sns_accounts || {});
         setMarketingNeeds(shop.marketing_needs || "");
-        setBudgetRange(shop.budget_range || "10~30만원");
+        setBudgetRange((shop.budget_range as BudgetRange) || "100k_to_300k");
         setGoals(shop.goals || "");
       }
     };
@@ -303,15 +305,15 @@ export default function ShopRegisterPage() {
           </div>
 
           <div>
-            <label className="label">대학생 월 급여 범위</label>
-            <p className="text-xs text-gray-400 -mt-2 mb-1">대학생에게 지급할 월 급여 범위입니다. 매칭 후 협의로 확정됩니다.</p>
+            <label className="label">마케터 월 급여 범위</label>
+            <p className="text-xs text-gray-400 -mt-2 mb-1">마케터에게 지급할 월 급여 범위입니다. 매칭 후 협의로 확정됩니다.</p>
             <select
               value={budgetRange}
               onChange={(e) => setBudgetRange(e.target.value as BudgetRange)}
               className="input-field"
             >
               {BUDGET_RANGES.map((range) => (
-                <option key={range} value={range}>{range}</option>
+                <option key={range.value} value={range.value}>{range.label}</option>
               ))}
             </select>
           </div>

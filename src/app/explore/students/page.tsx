@@ -16,16 +16,21 @@ const SNS_LABELS: Record<string, string> = {
   naver_blog: "네이버 블로그",
   twitter: "트위터",
 };
-const PAY_RANGES: BudgetRange[] = [
-  "10만 원 미만", "10~20만 원", "20~30만 원", "30만 원 이상",
+const PAY_RANGES: { value: BudgetRange; label: string; min?: number; max?: number }[] = [
+  { value: "free_or_negotiable", label: "무료/협의", max: 0 },
+  { value: "under_100k",        label: "10만원 이하", max: 10 },
+  { value: "100k_to_300k",      label: "10~30만원", min: 10, max: 30 },
+  { value: "300k_to_500k",      label: "30~50만원", min: 30, max: 50 },
+  { value: "500k_to_1m",        label: "50~100만원", min: 50, max: 100 },
+  { value: "over_1m",           label: "100만원 이상", min: 100 },
 ];
 
 function matchesPayRange(desiredPay: number | null | undefined, range: BudgetRange): boolean {
   if (desiredPay == null) return false;
-  if (range === "10만 원 미만") return desiredPay < 10;
-  if (range === "10~20만 원") return desiredPay >= 10 && desiredPay <= 20;
-  if (range === "20~30만 원") return desiredPay > 20 && desiredPay <= 30;
-  if (range === "30만 원 이상") return desiredPay > 30;
+  const r = PAY_RANGES.find(p => p.value === range);
+  if (!r) return true;
+  if (r.min != null && desiredPay < r.min) return false;
+  if (r.max != null && r.max > 0 && desiredPay > r.max) return false;
   return true;
 }
 
@@ -176,15 +181,15 @@ export default function ExploreStudentsPage() {
           <div className="flex flex-wrap gap-2">
             {PAY_RANGES.map((range) => (
               <button
-                key={range}
-                onClick={() => setFilterPayRange(filterPayRange === range ? "" : range)}
+                key={range.value}
+                onClick={() => setFilterPayRange(filterPayRange === range.value ? "" : range.value)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium border-2 transition-all ${
-                  filterPayRange === range
+                  filterPayRange === range.value
                     ? "border-green-600 bg-green-600 text-white"
                     : "border-gray-200 text-gray-600 hover:border-gray-300"
                 }`}
               >
-                {range}
+                {range.label}
               </button>
             ))}
           </div>

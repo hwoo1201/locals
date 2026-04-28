@@ -6,8 +6,13 @@ import { supabase } from "@/lib/supabase";
 import type { Shop, Profile, ShopCategory, BudgetRange } from "@/types";
 
 const CATEGORIES: ShopCategory[] = ["카페", "음식점", "소매", "뷰티", "기타"];
-const BUDGET_RANGES: BudgetRange[] = [
-  "10만 원 미만", "10~20만 원", "20~30만 원", "30만 원 이상",
+const BUDGET_RANGES: { value: BudgetRange; label: string }[] = [
+  { value: "free_or_negotiable", label: "무료/협의" },
+  { value: "under_100k",        label: "10만원 이하" },
+  { value: "100k_to_300k",      label: "10~30만원" },
+  { value: "300k_to_500k",      label: "30~50만원" },
+  { value: "500k_to_1m",        label: "50~100만원" },
+  { value: "over_1m",           label: "100만원 이상" },
 ];
 const REGIONS = ["서울", "경기", "인천", "부산", "대구", "광주", "대전", "울산", "강원", "충남", "충북", "전북", "전남", "경북", "경남", "제주"];
 
@@ -138,15 +143,15 @@ export default function ExploreShopsPage() {
           <div className="flex flex-wrap gap-2">
             {BUDGET_RANGES.map((b) => (
               <button
-                key={b}
-                onClick={() => setFilterBudget(filterBudget === b ? "" : b)}
+                key={b.value}
+                onClick={() => setFilterBudget(filterBudget === b.value ? "" : b.value)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium border-2 transition-all ${
-                  filterBudget === b
+                  filterBudget === b.value
                     ? "border-orange-500 bg-orange-500 text-white"
                     : "border-gray-200 text-gray-600 hover:border-gray-300"
                 }`}
               >
-                {b}
+                {b.label}
               </button>
             ))}
           </div>
@@ -233,7 +238,7 @@ export default function ExploreShopsPage() {
               {/* 급여 범위 */}
               {shop.budget_range && (
                 <p className="text-sm font-semibold text-orange-600 mt-1.5">
-                  급여 범위: {shop.budget_range}
+                  예산: {BUDGET_RANGES.find(b => b.value === shop.budget_range)?.label ?? shop.budget_range}
                 </p>
               )}
 
