@@ -1,7 +1,8 @@
 {
-  "name": "locals-app",
+  "name": "somsi",
   "version": "0.1.0",
   "private": true,
+  "description": "월매출 200만원 이하 소규모 사업과 마케터를 연결합니다",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

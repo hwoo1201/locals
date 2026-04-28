@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Profile } from "@/types";
 import LogoMark from "@/components/ui/LogoMark";
-import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
+import { BRAND } from "@/lib/brand";
 
 export default function GNB() {
   const router = useRouter();
@@ -50,8 +50,8 @@ export default function GNB() {
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-2.5">
             <LogoMark size={28} color="#E8EDE6" />
-            <span className="text-xl font-black text-[#E8EDE6] tracking-tight">{BRAND_NAME}</span>
-            <span className="hidden sm:block text-xs text-[#6B6B5E] font-medium">{BRAND_TAGLINE}</span>
+            <span className="text-xl font-black text-[#E8EDE6] tracking-tight">{BRAND.NAME_KO}</span>
+            <span className="hidden sm:block text-xs text-[#6B6B5E] font-medium">{BRAND.TAGLINE}</span>
           </Link>
 
           {/* 데스크탑 메뉴 */}

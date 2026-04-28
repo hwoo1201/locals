@@ -3,19 +3,27 @@ import "./globals.css";
 import GNB from "@/components/layout/GNB";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
-import { BRAND_NAME, BRAND_TAGLINE, BRAND_DESCRIPTION } from "@/lib/brand";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BRAND.URL),
   title: {
-    default: `${BRAND_NAME} - ${BRAND_TAGLINE}`,
-    template: `%s | ${BRAND_NAME}`,
+    default: `${BRAND.NAME_KO} - ${BRAND.TAGLINE}`,
+    template: `%s | ${BRAND.NAME_KO}`,
   },
-  description: BRAND_DESCRIPTION,
+  description: BRAND.DESCRIPTION,
   openGraph: {
-    title: `${BRAND_NAME} - ${BRAND_TAGLINE}`,
-    description: BRAND_DESCRIPTION,
-    type: "website",
+    title: `${BRAND.NAME_KO} - ${BRAND.TAGLINE}`,
+    description: BRAND.DESCRIPTION,
+    url: BRAND.URL,
+    siteName: BRAND.NAME_KO,
     locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND.NAME_KO} - ${BRAND.TAGLINE}`,
+    description: BRAND.DESCRIPTION,
   },
 };
 

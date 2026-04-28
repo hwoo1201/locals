@@ -2,8 +2,8 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { BRAND_NAME } from "@/lib/brand";
+import { useRouter, useSearchParams } from "next/navigation";
+import { BRAND } from "@/lib/brand";
 import type { UserType } from "@/types";
 
 interface PasswordRule {
@@ -40,6 +40,7 @@ function PasswordStrength({ password }: { password: string }) {
 }
 
 function SignupForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialType = (searchParams.get("type") as UserType) || null;
 
@@ -52,7 +53,6 @@ function SignupForm() {
   const [commissionAgreed, setCommissionAgreed] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
 
   const isPasswordValid = PASSWORD_RULES.every(({ test }) => test(password));
 
@@ -88,52 +88,18 @@ function SignupForm() {
       return;
     }
 
-    setSent(true);
+    router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`);
   };
 
-  if (sent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-              {BRAND_NAME}
-            </Link>
-          </div>
-          <div className="card text-center space-y-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-bold text-gray-900 text-lg">인증 이메일을 보냈습니다</p>
-              <p className="text-sm text-gray-500 mt-2">
-                <strong>{email}</strong>로 인증 링크를 발송했습니다.<br />
-                이메일을 확인하고 링크를 클릭해주세요.
-              </p>
-              <p className="text-xs text-gray-400 mt-2">
-                이메일이 보이지 않으면 스팸함을 확인해주세요.
-              </p>
-            </div>
-            <Link href="/auth/login" className="btn-primary inline-block mt-2">
-              로그인 페이지로 이동
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#F0E2B0]">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-3xl font-black text-blue-600 mb-2">
-            {BRAND_NAME}
+          <Link href="/" className="inline-block text-3xl font-black text-[#1A1A14] mb-2">
+            {BRAND.NAME_KO}
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">회원가입</h1>
-          <p className="text-gray-500 mt-1">무료로 시작하세요</p>
+          <h1 className="text-2xl font-bold text-[#1A1A14]">회원가입</h1>
+          <p className="text-[#8A8A7E] mt-1">무료로 시작하세요</p>
         </div>
 
         <div className="card">
@@ -146,11 +112,11 @@ function SignupForm() {
                 onClick={() => setUserType("owner")}
                 className={`p-4 rounded-xl border-2 text-center transition-all ${
                   userType === "owner"
-                    ? "border-blue-600 bg-blue-50 text-blue-700"
+                    ? "border-[#2C3E50] bg-[#2C3E50]/5 text-[#2C3E50]"
                     : "border-gray-200 hover:border-gray-300 text-gray-700"
                 }`}
               >
-                <div className="font-semibold text-sm">소상공인</div>
+                <div className="font-semibold text-sm">사업주</div>
                 <div className="text-xs text-gray-500 mt-0.5">마케팅이 필요해요</div>
               </button>
               <button
@@ -158,12 +124,12 @@ function SignupForm() {
                 onClick={() => setUserType("student")}
                 className={`p-4 rounded-xl border-2 text-center transition-all ${
                   userType === "student"
-                    ? "border-orange-500 bg-orange-50 text-orange-700"
+                    ? "border-[#4A7C59] bg-[#4A7C59]/5 text-[#4A7C59]"
                     : "border-gray-200 hover:border-gray-300 text-gray-700"
                 }`}
               >
-                <div className="font-semibold text-sm">대학생</div>
-                <div className="text-xs text-gray-500 mt-0.5">경험을 쌓고 싶어요</div>
+                <div className="font-semibold text-sm">마케터</div>
+                <div className="text-xs text-gray-500 mt-0.5">경험과 수익을 원해요</div>
               </button>
             </div>
           </div>
@@ -231,7 +197,7 @@ function SignupForm() {
                 <div>
                   <p className="text-sm font-bold text-orange-800 mb-1">수수료 안내</p>
                   <p className="text-xs text-orange-700 leading-relaxed">
-                    {BRAND_NAME}는 매칭 성사 시 <strong>첫 달 급여의 20%</strong>를 수수료로 <strong>1회만</strong> 받습니다.
+                    {BRAND.NAME_KO}는 매칭 성사 시 <strong>첫 달 급여의 20%</strong>를 수수료로 <strong>1회만</strong> 받습니다.
                   </p>
                   <p className="text-xs text-orange-600 mt-1">이후 추가 비용은 없습니다.</p>
                 </div>
@@ -266,7 +232,7 @@ function SignupForm() {
 
           <div className="mt-6 text-center text-sm text-gray-500">
             이미 계정이 있으신가요?{" "}
-            <Link href="/auth/login" className="text-blue-600 font-semibold hover:underline">
+            <Link href="/auth/login" className="text-[#4A7C59] font-semibold hover:underline">
               로그인
             </Link>
           </div>

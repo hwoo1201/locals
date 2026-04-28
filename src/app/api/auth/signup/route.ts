@@ -7,7 +7,7 @@ import type { UserType } from "@/types";
 
 // [Supabase 설정 필요]
 // 1. Authentication > Email Templates에서 한국어 인증 메일 템플릿 설정 권장:
-//      Subject: "[솜씨] 이메일 인증을 완료해주세요"
+//      Subject: "솜씨 이메일 인증을 완료해주세요"
 //      Body: "아래 버튼을 클릭하여 이메일 인증을 완료해주세요. {{ .ConfirmationURL }}"
 // 2. Authentication > URL Configuration > Redirect URLs에 추가:
 //      https://{your-domain}/auth/confirm

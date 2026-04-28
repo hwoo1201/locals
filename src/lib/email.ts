@@ -1,10 +1,12 @@
 import { Resend } from "resend";
-import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
+import { BRAND } from "@/lib/brand";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || "re_placeholder");
 }
-const FROM = process.env.RESEND_FROM_EMAIL || "noreply@matchr.kr";
+
+const FROM = `${BRAND.EMAIL_SENDER_NAME} <${BRAND.EMAIL}>`;
+const REPLY_TO = BRAND.EMAIL;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 function escapeHtml(str: string): string {
@@ -17,13 +19,13 @@ function escapeHtml(str: string): string {
 }
 
 const emailHeader = `
-  <h1 style="color: #2C3E50; font-size: 24px; margin-bottom: 4px;">${BRAND_NAME}</h1>
-  <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">${BRAND_TAGLINE}</p>
+  <h1 style="color: #2C3E50; font-size: 24px; margin-bottom: 4px;">${BRAND.NAME_KO}</h1>
+  <p style="color: #6b7280; font-size: 14px; margin-bottom: 32px;">${BRAND.TAGLINE}</p>
 `;
 
 const emailFooter = `
-  <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
-    이 이메일은 ${BRAND_NAME} 플랫폼에서 자동 발송되었습니다.
+  <p style="color: #9ca3af; font-size: 12px; margin-top: 32px; border-top: 1px solid #f3f4f6; padding-top: 16px;">
+    본 메일은 ${BRAND.NAME_KO}(${BRAND.DOMAIN})에서 발송되었습니다. 문의: ${BRAND.EMAIL}
   </p>
 `;
 
@@ -48,9 +50,10 @@ export async function sendMatchRequestEmail({
   const safeMessage = message ? escapeHtml(message) : undefined;
 
   await getResend().emails.send({
-    from: `${BRAND_NAME} <${FROM}>`,
+    from: FROM,
+    replyTo: REPLY_TO,
     to: toEmail,
-    subject: `[${BRAND_NAME}] ${fromName}님이 매칭을 요청했습니다`,
+    subject: `[${BRAND.NAME_KO}] ${fromName}님이 매칭을 요청했습니다`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         ${emailHeader}
@@ -108,9 +111,10 @@ export async function sendMatchAcceptedEmail({
   const safeContactMethod = fromContactMethod ? escapeHtml(fromContactMethod) : undefined;
 
   await getResend().emails.send({
-    from: `${BRAND_NAME} <${FROM}>`,
+    from: FROM,
+    replyTo: REPLY_TO,
     to: toEmail,
-    subject: `[${BRAND_NAME}] ${fromName}님이 매칭 요청을 수락했습니다`,
+    subject: `[${BRAND.NAME_KO}] ${fromName}님이 매칭 요청을 수락했습니다`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         ${emailHeader}
@@ -163,9 +167,10 @@ export async function sendMatchRejectedEmail({
   const safeFromName = escapeHtml(fromName);
 
   await getResend().emails.send({
-    from: `${BRAND_NAME} <${FROM}>`,
+    from: FROM,
+    replyTo: REPLY_TO,
     to: toEmail,
-    subject: `[${BRAND_NAME}] ${shopName} 매칭 요청 결과 안내`,
+    subject: `[${BRAND.NAME_KO}] ${shopName} 매칭 요청 결과 안내`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         ${emailHeader}
@@ -180,6 +185,50 @@ export async function sendMatchRejectedEmail({
         <a href="${SITE_URL}/explore/students"
            style="display: inline-block; background: #2C3E50; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
           다른 파트너 찾기 →
+        </a>
+
+        ${emailFooter}
+      </div>
+    `,
+  });
+}
+
+export async function sendProjectCompletedEmail({
+  toEmail,
+  toName,
+  partnerName,
+  shopName,
+  projectId,
+}: {
+  toEmail: string;
+  toName: string;
+  partnerName: string;
+  shopName: string;
+  projectId: string;
+}) {
+  const safeToName = escapeHtml(toName);
+  const safePartnerName = escapeHtml(partnerName);
+  const safeShopName = escapeHtml(shopName);
+
+  await getResend().emails.send({
+    from: FROM,
+    replyTo: REPLY_TO,
+    to: toEmail,
+    subject: `[${BRAND.NAME_KO}] ${shopName} 프로젝트가 완료됐습니다`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+        ${emailHeader}
+
+        <h2 style="font-size: 20px; color: #111827;">프로젝트 완료!</h2>
+        <p style="color: #374151; line-height: 1.6;">
+          안녕하세요, <strong>${safeToName}</strong>님!<br/>
+          <strong>${safePartnerName}</strong>님과 진행한 <strong>${safeShopName}</strong> 프로젝트가 완료됐습니다.<br/>
+          서로의 활동에 대한 리뷰를 남겨주세요.
+        </p>
+
+        <a href="${SITE_URL}/project/${projectId}"
+           style="display: inline-block; background: #4A7C59; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 16px;">
+          리뷰 남기기 →
         </a>
 
         ${emailFooter}

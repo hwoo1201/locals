@@ -1,5 +1,5 @@
 "use client";
-import { BRAND_NAME } from "@/lib/brand";
+import { BRAND } from "@/lib/brand";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -71,7 +71,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-[#2C3E50] mb-2">
-            {BRAND_NAME}
+            {BRAND.NAME_KO}
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">로그인</h1>
           <p className="text-gray-500 mt-1">계정에 로그인하세요</p>

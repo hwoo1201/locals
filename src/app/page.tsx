@@ -1,6 +1,6 @@
 import Link from "next/link";
 import LogoMark from "@/components/ui/LogoMark";
-import { BRAND_NAME, BRAND_TAGLINE, BRAND_DESCRIPTION } from "@/lib/brand";
+import { BRAND } from "@/lib/brand";
 
 const marketerTypes = [
   {
@@ -52,11 +52,11 @@ export default function Home() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight text-[#1A1A14]">
-            {BRAND_TAGLINE}
+            {BRAND.TAGLINE}
           </h1>
 
           <p className="text-lg md:text-xl text-[#5A5A4E] mb-4 max-w-2xl mx-auto leading-relaxed">
-            {BRAND_DESCRIPTION}
+            {BRAND.DESCRIPTION}
           </p>
           <p className="text-base text-[#8A8A7E] mb-10 max-w-xl mx-auto">
             인스타 정보계정 운영자, 마케팅 전공생, 주니어 프리랜서 — 다양한 마케터와 연결됩니다.
@@ -219,7 +219,7 @@ export default function Home() {
           <div className="flex justify-center mb-6">
             <LogoMark size={52} color="#E8EDE6" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-black mb-4">{BRAND_NAME}로 시작하세요</h2>
+          <h2 className="text-3xl md:text-4xl font-black mb-4">{BRAND.NAME_KO}로 시작하세요</h2>
           <p className="text-[#6B6B5E] mb-10 text-lg">
             사업주는 무료, 마케터는 매칭 성사 시에만 수수료.
           </p>

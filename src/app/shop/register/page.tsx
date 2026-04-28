@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { ShopCategory, BudgetRange, SnsAccounts } from "@/types";
+import { BRAND } from "@/lib/brand";
 
 const CATEGORIES: ShopCategory[] = ["카페", "음식점", "소매", "뷰티", "기타"];
 const BUDGET_RANGES: { value: BudgetRange; label: string }[] = [
@@ -166,7 +167,7 @@ export default function ShopRegisterPage() {
 
       {!existingShopId && (
         <div className="bg-[#F0E2B0] border border-[#D6A77A]/50 rounded-2xl px-5 py-4 text-sm text-[#5A5A4E] leading-relaxed">
-          <p className="font-semibold text-[#1A1A14] mb-1">MATCHR는 소규모 사업을 위한 플랫폼입니다</p>
+          <p className="font-semibold text-[#1A1A14] mb-1">{BRAND.NAME_KO}는 소규모 사업을 위한 플랫폼입니다</p>
           <p>월매출 200만원 이하의 소규모 사업자와 마케터를 연결합니다. 플랫폼 이용료는 없으며, 마케터에게 직접 급여를 협의해 지급합니다.</p>
         </div>
       )}
