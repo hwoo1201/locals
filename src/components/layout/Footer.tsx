@@ -12,7 +12,7 @@ export default function Footer() {
               <h3 className="text-[#E8EDE6] font-black text-lg tracking-tight">솜씨</h3>
             </div>
             <p className="text-sm leading-relaxed">
-              로컬 소상공인과 마케팅 대학생을<br />연결하는 매칭 플랫폼
+              소상공인과 마케팅 대학생을<br />연결하는 매칭 플랫폼
             </p>
           </div>
           <div>

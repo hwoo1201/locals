@@ -39,12 +39,12 @@ export default function Home() {
           </div>
 
           <div className="inline-flex items-center gap-2 bg-white/60 border border-[#D6A77A]/50 text-[#2C3E50] text-sm font-medium px-4 py-2 rounded-full mb-7">
-            <span>소상공인 × 마케팅 대학생 연결 플랫폼</span>
+            <span>소상공인 × 대학생 마케터 매칭 플랫폼</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight text-[#1A1A14]">
-            로컬 비즈니스를<br />
-            <span className="text-[#4A7C59]">대학생 마케터</span>와 함께
+            소상공인과<br />
+            <span className="text-[#4A7C59]">대학생 마케터</span>를 잇다
           </h1>
 
           <p className="text-lg md:text-xl text-[#5A5A4E] mb-10 max-w-2xl mx-auto leading-relaxed">
