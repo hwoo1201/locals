@@ -158,11 +158,18 @@ export default function ShopRegisterPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-gray-900">
+        <h1 className="text-2xl font-black text-[#1A1A14]">
           {existingShopId ? "매장 정보 수정" : "매장 등록"}
         </h1>
-        <p className="text-gray-500 mt-1">매장 정보를 입력해 대학생 마케터와 매칭되세요</p>
+        <p className="text-[#6A6A5E] mt-1">매장 정보를 입력해 마케터와 매칭되세요</p>
       </div>
+
+      {!existingShopId && (
+        <div className="bg-[#F0E2B0] border border-[#D6A77A]/50 rounded-2xl px-5 py-4 text-sm text-[#5A5A4E] leading-relaxed">
+          <p className="font-semibold text-[#1A1A14] mb-1">MATCHR는 소규모 사업을 위한 플랫폼입니다</p>
+          <p>월매출 200만원 이하의 소규모 사업자와 마케터를 연결합니다. 플랫폼 이용료는 없으며, 마케터에게 직접 급여를 협의해 지급합니다.</p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* 기본 정보 */}

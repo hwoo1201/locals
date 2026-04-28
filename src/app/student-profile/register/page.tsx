@@ -3,7 +3,32 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { StudentInterest, ShopCategory, AvailableChannels, PortfolioImage } from "@/types";
+import type { StudentInterest, ShopCategory, AvailableChannels, PortfolioImage, MarketerType, FollowerRange, ContentFormat } from "@/types";
+
+const MARKETER_TYPES: { value: MarketerType; label: string; desc: string }[] = [
+  { value: "student", label: "마케팅 전공/부전공 대학생", desc: "관련 전공 수업을 듣고 있는 대학생" },
+  { value: "instagram_content_creator", label: "인스타 정보계정 운영자", desc: "팔로워를 보유한 정보성 인스타 계정 운영자" },
+  { value: "freelancer_junior", label: "주니어 프리랜서", desc: "소규모 프리랜서 경험이 있는 마케터" },
+  { value: "sidejob", label: "N잡러 / 사이드잡", desc: "본업 외 마케팅을 부업으로 하는 분" },
+  { value: "other", label: "기타", desc: "위에 해당하지 않는 경우" },
+];
+
+const FOLLOWER_RANGES: { value: FollowerRange; label: string }[] = [
+  { value: "under_1k", label: "1,000명 미만" },
+  { value: "1k_to_5k", label: "1,000 ~ 5,000명" },
+  { value: "5k_to_10k", label: "5,000 ~ 10,000명" },
+  { value: "10k_to_50k", label: "10,000 ~ 50,000명" },
+  { value: "50k_to_100k", label: "50,000 ~ 100,000명" },
+  { value: "over_100k", label: "100,000명 이상" },
+];
+
+const CONTENT_FORMATS: { value: ContentFormat; label: string }[] = [
+  { value: "card_news", label: "카드뉴스" },
+  { value: "reels", label: "릴스/숏폼" },
+  { value: "info_post", label: "정보성 피드" },
+  { value: "curation", label: "큐레이션" },
+  { value: "other", label: "기타" },
+];
 
 const INTERESTS: StudentInterest[] = [
   "SNS마케팅",
@@ -54,6 +79,12 @@ export default function StudentProfileRegisterPage() {
   const [success, setSuccess] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [marketerType, setMarketerType] = useState<MarketerType>("student");
+  const [instagramHandle, setInstagramHandle] = useState("");
+  const [pageTopic, setPageTopic] = useState("");
+  const [followerRange, setFollowerRange] = useState<FollowerRange>("under_1k");
+  const [contentFormat, setContentFormat] = useState<ContentFormat>("card_news");
+
   const [interests, setInterests] = useState<StudentInterest[]>([]);
   const [channels, setChannels] = useState<AvailableChannels>({});
   const [experience, setExperience] = useState("");
@@ -94,6 +125,11 @@ export default function StudentProfileRegisterPage() {
 
       if (sp) {
         setExistingProfileId(sp.id);
+        setMarketerType(sp.marketer_type || "student");
+        setInstagramHandle(sp.instagram_handle || "");
+        setPageTopic(sp.page_topic || "");
+        setFollowerRange(sp.follower_range || "under_1k");
+        setContentFormat(sp.content_format || "card_news");
         setInterests(sp.interests || []);
         setChannels(sp.available_channels || {});
         setExperience(sp.experience || "");
@@ -195,6 +231,11 @@ export default function StudentProfileRegisterPage() {
 
     const payload = {
       user_id: userId,
+      marketer_type: marketerType,
+      instagram_handle: marketerType === "instagram_content_creator" ? instagramHandle || null : null,
+      page_topic: marketerType === "instagram_content_creator" ? pageTopic || null : null,
+      follower_range: marketerType === "instagram_content_creator" ? followerRange : null,
+      content_format: marketerType === "instagram_content_creator" ? contentFormat : null,
       interests,
       available_channels: channels,
       experience,
@@ -243,6 +284,87 @@ export default function StudentProfileRegisterPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* 마케터 유형 */}
+        <div className="card space-y-4">
+          <h2 className="font-bold text-[#1A1A14] text-lg">마케터 유형 *</h2>
+          <p className="text-sm text-[#8A8A7E] -mt-2">본인에게 가장 잘 맞는 유형을 선택하세요</p>
+          <div className="space-y-2">
+            {MARKETER_TYPES.map((type) => (
+              <button
+                key={type.value}
+                type="button"
+                onClick={() => setMarketerType(type.value)}
+                className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all ${
+                  marketerType === type.value
+                    ? "border-[#4A7C59] bg-[#4A7C59]/5"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <p className={`font-semibold text-sm ${marketerType === type.value ? "text-[#4A7C59]" : "text-[#1A1A14]"}`}>{type.label}</p>
+                <p className="text-xs text-[#8A8A7E] mt-0.5">{type.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 인스타 정보계정 상세 (조건부) */}
+        {marketerType === "instagram_content_creator" && (
+          <div className="card space-y-4 border-[#D6A77A]/40">
+            <h2 className="font-bold text-[#1A1A14] text-lg">인스타그램 계정 정보</h2>
+            <div>
+              <label className="label">인스타그램 핸들 (@)</label>
+              <input
+                type="text"
+                value={instagramHandle}
+                onChange={(e) => setInstagramHandle(e.target.value)}
+                placeholder="@username"
+                className="input-field"
+              />
+            </div>
+            <div>
+              <label className="label">계정 주제/카테고리</label>
+              <input
+                type="text"
+                value={pageTopic}
+                onChange={(e) => setPageTopic(e.target.value)}
+                placeholder="예: 뷰티, 맛집, 라이프스타일"
+                className="input-field"
+              />
+            </div>
+            <div>
+              <label className="label">팔로워 수</label>
+              <select
+                value={followerRange}
+                onChange={(e) => setFollowerRange(e.target.value as FollowerRange)}
+                className="input-field"
+              >
+                {FOLLOWER_RANGES.map((r) => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">주로 만드는 콘텐츠 형식</label>
+              <div className="flex flex-wrap gap-2">
+                {CONTENT_FORMATS.map((f) => (
+                  <button
+                    key={f.value}
+                    type="button"
+                    onClick={() => setContentFormat(f.value)}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all ${
+                      contentFormat === f.value
+                        ? "border-[#4A7C59] bg-[#4A7C59] text-white"
+                        : "border-gray-200 text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* 관심 분야 */}
         <div className="card space-y-4">
           <h2 className="font-bold text-gray-900 text-lg">관심 분야 *</h2>
