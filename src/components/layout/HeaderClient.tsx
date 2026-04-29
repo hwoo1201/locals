@@ -22,7 +22,7 @@ export default function HeaderClient({ initialProfile }: { initialProfile: Profi
       setProfile(data ?? null);
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
       if (event === "SIGNED_OUT") {
         setProfile(null);
       } else if (event === "SIGNED_IN") {
