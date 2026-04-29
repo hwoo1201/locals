@@ -31,11 +31,13 @@ export default function MatchesPage() {
   const [selectedWeeks, setSelectedWeeks] = useState<number>(4);
   const [agreedPay, setAgreedPay] = useState<string>("");
   const [toast, setToast] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push("/auth/login"); return; }
+      setUserType(user.user_metadata?.user_type ?? null);
 
       const [{ data: recvData }, { data: sentData }] = await Promise.all([
         supabase.from("match_requests").select("*").eq("target_id", user.id).order("created_at", { ascending: false }),
@@ -195,8 +197,11 @@ export default function MatchesPage() {
             {tab === "received" ? "받은 요청이 없습니다" : "보낸 요청이 없습니다"}
           </p>
           {tab === "sent" && (
-            <Link href="/explore/students" className="mt-3 inline-block text-sm text-blue-600 hover:underline">
-              대학생 탐색하러 가기 →
+            <Link
+              href={userType === "student" ? "/explore/shops" : "/explore/students"}
+              className="mt-3 inline-block text-sm text-blue-600 hover:underline"
+            >
+              {userType === "student" ? "사업 탐색하러 가기 →" : "마케터 탐색하러 가기 →"}
             </Link>
           )}
         </div>
