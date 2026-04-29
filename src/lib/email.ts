@@ -38,7 +38,7 @@ export async function sendVerificationEmail({
   tokenHash: string;
   type?: "signup" | "magiclink";
 }) {
-  const verifyUrl = `${SITE_URL}/auth/confirm?token_hash=${encodeURIComponent(tokenHash)}&type=${type}`;
+  const verifyUrl = `${SITE_URL}/auth/callback?token_hash=${encodeURIComponent(tokenHash)}&type=${type}`;
 
   await getResend().emails.send({
     from: FROM,

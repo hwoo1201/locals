@@ -1,17 +1,46 @@
 "use client";
 import { BRAND } from "@/lib/brand";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-export default function LoginPage() {
+const ERROR_MESSAGES: Record<string, string> = {
+  auth_callback_failed: "이메일 인증에 실패했습니다. 링크가 만료됐거나 이미 사용된 링크입니다.",
+  wrong_user_type: "해당 페이지에 접근할 수 없는 계정 유형입니다.",
+};
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next");
+  const errorCode = searchParams.get("error");
+
+  const safeNext =
+    nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")
+      ? nextPath
+      : null;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(errorCode ? (ERROR_MESSAGES[errorCode] ?? "") : "");
+
+  useEffect(() => {
+    const check = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) router.replace("/");
+    };
+    void check();
+  }, [router]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(""), 5000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,30 +63,7 @@ export default function LoginPage() {
         return;
       }
 
-      // user_metadata에서 user_type 확인 (DB 쿼리 불필요)
-      const userType = data.user.user_metadata?.user_type;
-
-      if (userType === "owner") {
-        router.push("/dashboard/owner");
-      } else if (userType === "student") {
-        router.push("/dashboard/student");
-      } else {
-        // 구형 계정: DB에서 조회
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("user_type")
-          .eq("user_id", data.user.id)
-          .single();
-
-        if (profile?.user_type === "owner") {
-          router.push("/dashboard/owner");
-        } else if (profile?.user_type === "student") {
-          router.push("/dashboard/student");
-        } else {
-          router.push("/dashboard/owner");
-        }
-      }
-
+      router.push(safeNext ?? "/");
       router.refresh();
     } catch {
       setError("오류가 발생했습니다. 다시 시도해주세요.");
@@ -68,6 +74,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
+      {toast && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-sm font-medium shadow-lg bg-red-500 text-white">
+          {toast}
+        </div>
+      )}
+
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-3xl font-black text-[#2C3E50] mb-2">
@@ -131,5 +143,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-2 border-[#4A7C59] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

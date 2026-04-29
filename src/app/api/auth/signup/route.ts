@@ -58,18 +58,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "회원가입에 실패했습니다." }, { status: 500 });
     }
 
-    // 프로필 생성
-    const { error: profileError } = await admin.from("profiles").insert({
+    // 프로필 생성 (upsert: handle_new_user 트리거가 먼저 실행된 경우 충돌 방지)
+    const { error: profileError } = await admin.from("profiles").upsert({
       user_id: user.id,
       user_type: userType as UserType,
       name,
       phone: phone || null,
       region: region || null,
-    });
+    }, { onConflict: "user_id" });
 
     if (profileError) {
       await admin.auth.admin.deleteUser(user.id);
-      Sentry.captureException(profileError, { extra: { context: "signup - profile insert" } });
+      Sentry.captureException(profileError, { extra: { context: "signup - profile upsert" } });
       console.error("프로필 생성 실패:", profileError);
       return NextResponse.json({ error: "프로필 생성에 실패했습니다: " + profileError.message }, { status: 500 });
     }

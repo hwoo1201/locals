@@ -1,6 +1,10 @@
 import Link from "next/link";
 import LogoMark from "@/components/ui/LogoMark";
 import { BRAND } from "@/lib/brand";
+import { getCurrentProfile } from "@/lib/auth";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
+import WelcomeBanner from "@/components/ui/WelcomeBanner";
+import ErrorToast from "@/components/ui/ErrorToast";
 
 const marketerTypes = [
   {
@@ -32,9 +36,32 @@ const steps = [
   { step: "04", title: "프로젝트 시작", desc: "마케팅 진행 & 효과 측정" },
 ];
 
-export default function Home() {
+async function getBannerData() {
+  const profile = await getCurrentProfile();
+  if (!profile) return null;
+
+  const supabase = await createServerSupabaseClient();
+  if (profile.user_type === "owner") {
+    const { data } = await supabase.from("shops").select("id").eq("owner_id", profile.user_id).maybeSingle();
+    return { profile, hasProfile: !!data };
+  } else {
+    const { data } = await supabase.from("student_profiles").select("id").eq("user_id", profile.user_id).maybeSingle();
+    return { profile, hasProfile: !!data };
+  }
+}
+
+export default async function Home() {
+  const bannerData = await getBannerData();
   return (
     <div className="min-h-screen">
+      <ErrorToast />
+      {bannerData && (
+        <WelcomeBanner
+          name={bannerData.profile.name}
+          userType={bannerData.profile.user_type}
+          hasProfile={bannerData.hasProfile}
+        />
+      )}
       {/* 히어로 섹션 */}
       <section className="bg-[#F0E2B0] py-28 px-4 relative overflow-hidden">
         <div className="absolute top-[-100px] right-[-100px] w-[450px] h-[450px] rounded-full bg-[#D6A77A]/20 pointer-events-none" />

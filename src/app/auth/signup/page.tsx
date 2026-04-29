@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BRAND } from "@/lib/brand";
+import { supabase } from "@/lib/supabase";
 import type { UserType } from "@/types";
 
 interface PasswordRule {
@@ -42,6 +43,14 @@ function PasswordStrength({ password }: { password: string }) {
 function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const check = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) router.replace("/");
+    };
+    void check();
+  }, [router]);
   const initialType = (searchParams.get("type") as UserType) || null;
 
   const [userType, setUserType] = useState<UserType | null>(initialType);

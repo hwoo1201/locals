@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import GNB from "@/components/layout/GNB";
+import HeaderServer from "@/components/layout/HeaderServer";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
 import { BRAND } from "@/lib/brand";
@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="antialiased min-h-screen flex flex-col">
         <Providers>
-          <GNB />
+          <HeaderServer />
           <main className="flex-1 pt-16">
             {children}
           </main>
